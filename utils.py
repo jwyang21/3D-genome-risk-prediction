@@ -1,50 +1,40 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
+# frequently used global variables and functions
+import argparse
 import pandas as pd
 import numpy as np
-import os
-import sys
+from collections import defaultdict
 
+CHROMOSOMES = [f'chr{i}' for i in range(1, 23)] + ['chrX', 'chrY']
 DATA_DIR = '/data/project/jeewon/research/3D-ITH/data'
 BINNED_DIFFMAT_DIR = '/data/project/3dith/pipelines/binned-difference-matrix-v2/result' #'chr1', 'chr1_mask'
 TUMOR_BARCODES = ['01', '02', '03','04', '05', '06', '07', '08', '09']
 NORMAL_BARCODES = ['11', '12', '13','14', '15', '16', '17', '18', '19']
-#Tumor types range from 01 - 09, normal types from 10 - 19 and control samples from 20 - 29. See Code Tables Report for a complete list of sample codes
-PC1_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/all-samples-pc1/result/' #/{TCGA-cohort}/{sample}.npz or #/{TCGA-cohort}/{sample}_inv_exp.npz #'chr1'
-CHROM_LENGTH = pd.read_csv('/data/project/jeewon/research/reference/hg19.fa.sizes', sep = '\t', header=None)
-CHROM_LENGTH.columns = ['chr', 'len']
-FIRE_PC1 = pd.read_csv('/data/project/3dith/data/fire_pc1.csv') #FIRE_PC1 'end' column contains NA, so preprocessing is needed.
-FIRE_BINSIZE = int(1e6)
-FIRE_PC1['end'] = [FIRE_PC1['start'].values[i]+FIRE_BINSIZE-1 for i in range(FIRE_PC1.shape[0])]
-FIRE_AB = pd.read_csv('/data/project/3dith/data/fire_a_b_labels.csv')
-FIRE2TCGA = pd.read_csv(os.path.join(DATA_DIR, 'tcga-fire-cohorts.csv'))
-PROBEMAP_CGC = pd.read_csv(os.path.join(DATA_DIR, 'gene-expr-hg19-xena', 'probemap-cgc-sampled.csv'))
-PROBEMAP_CGC.index = [PROBEMAP_CGC['chrom'].values[i]+':'+str(PROBEMAP_CGC['chromStart_binned'].values[i])+'-'+str(PROBEMAP_CGC['chromEnd_binned'].values[i]-1) for i in range(PROBEMAP_CGC.shape[0])]
-SAVEDIR = os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/ab-agreement/result')
-
-
-# In[4]:
-
+## TCGA barcode: Tumor types range from 01 - 09, normal types from 10 - 19 and control samples from 20 - 29. See Code Tables Report for a complete list of sample codes
+CHR_LENGTH = pd.read_csv('/data/project/jeewon/research/reference/GRCh37_hg19_chr_length.csv')[['Chromosome', 'Total_length']]
+CPG_ANNOT = pd.read_csv('/data/project/3dith/data/humanmethylation450_15017482_v1-2.csv', skiprows = [0,1,2,3,4,5,6], index_col=0)
+PC1_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/all-samples-pc1/result/' #'chr1'
+METH_DIR = '/data/project/3dith/data/450k_xena/'#TCGA-[XXXX].HumanMethylation450.tsv'
+PMD_CPG_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/find-pmd/result' #./{cohort}/pmd_cpg.csv #columns: ['chrom','cpg']
+SAVEDIR = os.path.join(os.getcwd(), 'result')
+print("SAVEDIR: {}".format(SAVEDIR))
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
     #parser.add_argument('-i', '--input', help='Beta bedgraph file.', required=True)
     #parser.add_argument('-s', '--chrom-size', help='Chromosome size table.', required=True)
-    parser.add_argument('-b', '--binsize', type=int, default=int(1e6))
+    #parser.add_argument('-b', '--binsize', type=int, default=int(1e6))
     #parser.add_argument('-c', '--n-min-cpgs', type=int, default=1)
     #parser.add_argument('-o', '--output', help='Output.', required=True)
     parser.add_argument('-ch', '--cohort', help = 'TCGA-cohort', required = True)
     parser.add_argument('-cr', '--chrom', help = 'chromosome', required = True)
-    parser.add_argument('-f', '--flag', help = 'binned diffmat type(raw, inv)', required=True)
+
     return parser.parse_args()
 
-
-# In[5]:
-
+def preprocess_cpg_annot(CPG_ANNOT):
+    CPG_ANNOT2 = CPG_ANNOT[CPG_ANNOT['CHR'].notnull()] #drop any row whose chrom value is null.
+    chrom_string = [str(x).split('.')[0] for x in CPG_ANNOT2.CHR.values.flatten()]
+    CPG_ANNOT2['CHR'] = chrom_string #convert mixture of int and string types into string type only. 
+    return CPG_ANNOT2
 
 def get_sample_list(cohort):
     # sample list of input TCGA cohort
@@ -64,64 +54,34 @@ def get_sample_list(cohort):
             pass
     S = T + N
     print("{}: tumor {}, normal {}, total {}".format(cohort, len(T), len(N), len(S)))
-    
+
     return T, N, S
 
-
-# In[6]:
-
-
-def import_binned_diffmat(cohort, sample, chrom, binsize):
+def import_binned_diffmat(cohort, sample, chrom):
     # return a binned diffmat
     fname = os.path.join(BINNED_DIFFMAT_DIR, cohort, sample+'.npz')
     raw_diffmat = np.load(fname)[chrom]
     raw_mask = np.load(fname)['{}_mask'.format(chrom)]
     diffmat_masked = raw_diffmat[~raw_mask].T[~raw_mask].T
-    
-    # return bins with mask applied.
-    chrom_len = int(CHROM_LENGTH[CHROM_LENGTH['chr']==chrom].len.values[0])
-    n_bins = int((chrom_len//binsize) + 1)
-    bins = np.array([chrom+':'+str((i * binsize) + 1)+'-'+str((i+1)*binsize) for i in range(n_bins)])
-    #return diffmat_masked, 1/np.exp(diffmat_masked)
-    return diffmat_masked, 1/np.exp(diffmat_masked), bins[~raw_mask]
 
+    return diffmat_masked, 1/np.exp(diffmat_masked)
 
-# In[7]:
-
+def pc1(m):
+    #print("pc1(m)")
+    pca = PCA(n_components=3)
+    pc = pca.fit_transform(m)
+    #print(pc)
+    pc1 = pc[:,0]
+    #print(pc1)
+    #print('-----')
+    return pc1
 
 def import_pc1(cohort, sample, chrom, flag):
     # import pre-computed PC1 of sample-of-interest
     if flag=='raw':
         fname = os.path.join(PC1_DIR, cohort, sample+'.npz')
-    elif flag=='inv': #inverse exponential
+    elif flag=='inv':
         fname = os.path.join(PC1_DIR, cohort, sample+'_inv_exp.npz')
     pc1 = np.load(fname)[chrom]
 
-    return pc1.flatten()
-
-
-# In[8]:
-
-
-def import_fire(tcga_cohort, flag, chrom, fire_cohort):
-    # import FIRE A,B or PC1 data
-    cols = ['chr', 'start', 'end']
-    
-    cols.append(fire_cohort)
-
-    if flag=='ab':
-        df = FIRE_AB[cols].dropna()
-        df = df[df['chr']==int(chrom.split('chr')[-1])]
-        df.index = ['chr'+str(df['chr'].values[i])+':'+str(df['start'].values[i])+'-'+str(df['end'].values[i]) for i in range(df.shape[0])]  
-        
-    elif flag=='pc1':
-        df = FIRE_PC1[cols].dropna()
-        df = df[df['chr']==int(chrom.split('chr')[-1])]
-        df.index = ['chr'+str(df['chr'].values[i])+':'+str(df['start'].values[i])+'-'+str(df['end'].values[i]) for i in range(df.shape[0])]  
-    
-    else:
-        pass
-
-    return df
-
-
+    return pc1
