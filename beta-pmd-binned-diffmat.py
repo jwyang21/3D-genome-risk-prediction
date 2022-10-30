@@ -3,6 +3,8 @@
 
 # In[ ]:
 
+# To-do: compute binned difference matrix using CpG probes which (1) belong to PMD and (2) has notnull beta value
+
 
 import pandas as pd
 import numpy as np
