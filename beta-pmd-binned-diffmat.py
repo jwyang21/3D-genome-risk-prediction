@@ -189,7 +189,7 @@ def compute_binned_diffmat(bin_pmd_cpg, pmd_cpg_annot_df, beta, sample, min_num_
         current_bin1 = list(bin_pmd_cpg2.keys())[i]
         current_bin_cpg1 = bin_pmd_cpg2[current_bin1]
         beta_current_cpg1 = beta2.loc[current_bin_cpg1]
-        for j in range(n_pmd_cpg_bins):
+        for j in range(i, n_pmd_cpg_bins):#binned-diffmat is symmetric matrix.
             current_bin2 = list(bin_pmd_cpg2.keys())[j]
             current_bin_cpg2 = bin_pmd_cpg2[current_bin2]
             beta_current_cpg2 = beta2.loc[current_bin_cpg2]
