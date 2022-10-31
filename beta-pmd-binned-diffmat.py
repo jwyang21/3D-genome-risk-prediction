@@ -159,7 +159,7 @@ def get_pmd_cpg_annot(cohort, chrom, cpg_annot, pmd_cpg_list, chrom_len, binsize
                 bin_pmd_cpg[current_bin_name].append(current_cpg)
         
     # save bin_pmd_cpg and pmd_cpg_annot_df
-    save_dictionary_npz(bin_pmd_cpg, os.path.join(cohort_dir, chrom+'bin-pmd-cpg')) #bin_pmd_cpg
+    save_dictionary_npz(bin_pmd_cpg, os.path.join(cohort_dir, chrom+'_bin-pmd-cpg')) #bin_pmd_cpg
     
     pmd_cpg_annot_df.to_csv(os.path.join(cohort_dir, chrom+'_pmd-cpg-annot-df.csv'), index=False) #pmd_cpg_annot_df
     print(os.path.join(cohort_dir, chrom+'_pmd-cpg-annot-df.csv'))
