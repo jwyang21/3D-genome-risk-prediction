@@ -16,6 +16,7 @@ import argparse
 
 # To-Do
 ## PMD 기준을 만족하는 genomic bin들 찾기 -> 여기에 위치한 cpg probe들의 목록을 probemap 사용해서 찾기 (hg19) -> cpg probe 목록 저장.
+## find CpG probes which belong to PMD region in cohort-of-interest.
 
 
 # - PMD definition
