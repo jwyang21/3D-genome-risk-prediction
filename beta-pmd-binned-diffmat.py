@@ -257,7 +257,8 @@ if __name__ == '__main__':
             print('----\nprocessing {}-th sample: {}'.format(S.index(s), s))
         binned_diffmat = compute_binned_diffmat(bin_pmd_cpg, pmd_cpg_annot_df, beta, s, 1)
         ## binned difference matrix of current sample, current chromosome.
-        npz_fname = os.path.join(cohort_dir, s)
+        npz_fname = os.path.join(cohort_dir, s+'_'+args.chrom) 
+        ## for each sample, 22 binned diffmats corresponding to 22 chromosomes are made.
         np.savez(npz_fname, value = binned_diffmat.values, colnames = binned_diffmat.columns.values, rownames = binned_diffmat.index.values)
         print("npz fname: {}".format(npz_fname+'.npz'))  
 
