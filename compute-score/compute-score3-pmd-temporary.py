@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# To-Do: compute score3 using PC1 computed from pmd-binned-diffmats.  
+
 # In[1]:
 
 
