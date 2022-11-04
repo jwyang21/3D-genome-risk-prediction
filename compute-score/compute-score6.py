@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-#score5: score2 * score3 / score4
+# score6: score2 * score3 / score4
 # score2: normal과의 거리, score3: perturbation의 정도, score4: SC와의 거리
 # normal과 거리가 멀 수록, perturbation이 심할 수록, SC에 가까울 수록 cancer cell-like라고 생각.
 
