@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # In[1]:
-
+# To-Do: compute pc1 from binned difference matrix of each chromosome
 
 import numpy as np
 import pandas as pd
