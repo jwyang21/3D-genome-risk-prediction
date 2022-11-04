@@ -3,6 +3,7 @@
 
 # In[ ]:
 
+# To-Do: compute pc1 from original binned difference matrix (of each chromosome)
 
 import numpy as np
 import pandas as pd
