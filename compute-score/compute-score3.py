@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # In[1]:
-
+# To-Do: compute score3 on original binned difference matrices. (all 22 autosomes)
 
 import numpy as np
 import pandas as pd
