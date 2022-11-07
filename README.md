@@ -12,3 +12,7 @@
       - score2: sample과 normal과의 거리
       - score4: sample과 pcbc (pure stem cell)과의 거리
       - normal과 거리가 멀 수록, PC1 graph의 perturbation이 심할 수록, stem cell 에 가까울 수록 cancer cell-like 할 라고 생각
+- score7:
+  - cosine(theta)
+    - theta: 각 샘플을 (x, y) = (score2, score4) 로 cartesian 좌표평면에 나타냈을 때, 원점으로부터 각 sample의 line과 x축간의 각도
+    - theta 값 구하기 전에 score2와 score4는 각 cohort별로 minmaxscaling해서 [0,1]로 맞춰줌.
