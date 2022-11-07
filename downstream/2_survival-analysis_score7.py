@@ -3,6 +3,8 @@
 
 # In[1]:
 
+## description: add score7 on '2_survival-analysis_v3.py'
+
 
 import pandas as pd
 import numpy as np
