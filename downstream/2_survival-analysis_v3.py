@@ -3,6 +3,7 @@
 
 # In[1]:
 
+## for score2, 3, 4, 5
 
 import pandas as pd
 import numpy as np
