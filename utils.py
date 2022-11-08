@@ -87,7 +87,7 @@ def import_pc1(cohort, sample, chrom, flag):
 
     return pc1
 
-def integrage_abs_pc1(pc1_450k): 
+def integrate_abs_pc1(pc1_450k): 
     pc1_abs = np.array([abs(x) for x in pc1_450k])
     area = simps(pc1_abs, np.arange(len(pc1_abs)))
     return area
