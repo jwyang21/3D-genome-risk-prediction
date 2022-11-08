@@ -1,5 +1,5 @@
 # 3dith
-
+## Scores
 - score1: count total number entries whose value > cohort-dependent-threshold
 - score2: inverse exponential of binned difference matrix -> compute PC1 -> distance between PC1 of each chromosome of each sample from normal PC1 (e.g., FIRE)
 - score3: PC1 그래프에서 절댓값 y 적분 -> quantify how much the PC1 graph is perturbated 
@@ -15,4 +15,6 @@
 - score7:
   - cosine(theta)
     - theta: 각 샘플을 (x, y) = (score2, score4) 로 cartesian 좌표평면에 나타냈을 때, 원점으로부터 각 sample의 line과 x축간의 각도
-    - theta 값 구하기 전에 score2와 score4는 각 cohort별로 minmaxscaling해서 [0,1]로 맞춰줌.
+    - theta 값 구하기 전에 score2와 score4는 각 cohort별로 minmax scaling해서 [0,1]로 맞춰줌.
+## Benchmark
+- https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0741-y
