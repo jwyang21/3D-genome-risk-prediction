@@ -3,7 +3,7 @@
 
 # In[4]:
 
-
+# description: parse log file and save Pearson correlation between score7 and average methylation level for all cohorts and save it as a csv file.
 import pandas as pd
 import numpy as np
 import os
