@@ -3,6 +3,8 @@
 
 # In[1]:
 
+# description: parse log file of survival analysis and output resulting .csv file (row: cohort, column: each clinical variable) 
+
 
 import pandas as pd
 import numpy as np
@@ -101,7 +103,7 @@ for i in range(len(cohort_list)):
 
 
 '''
-#step 3-1. 결과를 깔끔하게 정리하고 싶을때.
+#step 3-1. 2-level columnn name 사용해서 결과를 깔끔하게 정리하고 싶을때.
 NA_cohorts = df[df.isna().sum(axis = 1) == df.shape[1]].index.values
 df2 = df.drop(NA_cohorts, axis = 0)
 
@@ -135,7 +137,7 @@ pd.read_csv(fname, index_col = 0)
 # In[8]:
 
 
-#step 3-2. 그냥 저장하고 싶을때
+#step 3-2. #그냥 저장하고 싶을때
 # save file
 NA_cohorts = df[df.isna().sum(axis = 1) == df.shape[1]].index.values
 df2 = df.drop(NA_cohorts, axis = 0)
@@ -156,8 +158,8 @@ df3
 
 
 # -----------------
-
-# ## Tumor_normal ttest results
+# below this line are codes for score2 only!!
+## Tumor_normal ttest results
 
 # In[18]:
 
