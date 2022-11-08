@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # In[3]:
-
+# description: compute correlation between score and average methylation level
 
 import pandas as pd
 import numpy as np
