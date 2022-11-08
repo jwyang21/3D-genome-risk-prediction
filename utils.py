@@ -3,6 +3,7 @@ import argparse
 import pandas as pd
 import numpy as np
 from collections import defaultdict
+from scipy.integrate import simps
 
 CHROMOSOMES = [f'chr{i}' for i in range(1, 23)] + ['chrX', 'chrY']
 DATA_DIR = '/data/project/jeewon/research/3D-ITH/data'
@@ -85,3 +86,9 @@ def import_pc1(cohort, sample, chrom, flag):
     pc1 = np.load(fname)[chrom]
 
     return pc1
+
+def integrage_abs_pc1(pc1_450k): 
+    pc1_abs = np.array([abs(x) for x in pc1_450k])
+    area = simps(pc1_abs, np.arange(len(pc1_abs)))
+    return area
+
