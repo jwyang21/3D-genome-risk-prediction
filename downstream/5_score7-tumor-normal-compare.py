@@ -2,6 +2,7 @@
 # coding: utf-8
 
 # In[14]:
+# description: compare score7 of tumor and normal for each cohort. (histogram + independent t-test)
 
 
 import pandas as pd
