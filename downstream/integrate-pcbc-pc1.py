@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # In[1]:
-
+# description: integrate pcbc pc1 values to get pcbc reference (used for score8)
 
 # integrate absolute value of PC1 of each pcbc sample -> average per chromosome -> pcbc SC reference
 # use euclidean as a default distance. 
