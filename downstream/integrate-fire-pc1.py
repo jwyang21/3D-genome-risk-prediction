@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # In[3]:
-
+# description: integrate FIRE PC1 values to get fire reference. (use for score9)
 
 import pandas as pd
 import numpy as np
