@@ -106,3 +106,21 @@ def import_score(cohort, score, reference, distance):#import score2 and score4
     else: #add here if other types of scores are needed. (score1, score3, ...)
         pass
     return score_df
+
+def compute_angle(x, y):#1사분면에서 (x,y)가 주어졌을때, (0,0)과 (x,y)를 잇는 직선이 x축과 이루는 각도 theta를 구하고 cosine(theta) 
+    x = score2_norm.copy().flatten()
+    y = score4_norm.copy().flatten()
+    if len(x) != len(y):
+        raise ValueError
+    slope = np.array([float(y[i]/x[i]) for i in range(len(x))])
+    radian_theta = np.array([math.atan(s) for s in slope])
+    degree_theta = np.array([math.degrees(r) for r in radian_theta])
+    cosine_radian = np.array([math.cos(r) for r in radian_theta])
+
+    '''
+    slope = y / x #slope of line = y / x
+    radian_theta = math.atan(slope)
+    degree_theta = math.degrees(radian_theta)
+    cosine_radian = math.cos(radian_theta) 
+    '''
+    return radian_theta, degree_theta, cosine_radian
