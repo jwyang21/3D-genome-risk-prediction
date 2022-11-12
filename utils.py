@@ -92,3 +92,17 @@ def integrate_abs_pc1(pc1_450k):
     area = simps(pc1_abs, np.arange(len(pc1_abs)))
     return area
 
+def import_score(cohort, score, reference, distance):#import score2 and score4
+    if score=='score2':
+        pickle_fname = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'+cohort+'/'+score+'_'+reference+'_'+distance+'.pickle'
+        raw_score_df = pd.read_pickle(pickle_fname)
+        mean_score = raw_score_df.mean(axis=1).values
+        score_df = pd.DataFrame(mean_score, index = raw_score_df.index.values, columns = ['score2'])
+         
+    elif score=='score4':
+        pickle_fname = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'+cohort+'/score4_'+reference_score4+'_'+distance_score4+'.pickle'
+        raw_score_df = pd.read_pickle(pickle_fname)
+        score_df = pd.DataFrame(raw_score_df.simple_avg.values.flatten(), index = raw_score_df.index.values, columns = ['score4'])
+    else: #add here if other types of scores are needed. (score1, score3, ...)
+        pass
+    return score_df
