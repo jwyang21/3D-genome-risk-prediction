@@ -44,6 +44,7 @@ def parse_arguments():
     parser.add_argument('-s2r', '--score2_reference', help = 'reference to be used in score2. fire or normal', default = 'NORMAL', required = False)
     parser.add_argument('-d', '--distance_metric', help = 'distance metric to be used in either score2 or score4. euclidean, jsd, or cosine-similarity', defulat = 'euclidean', required = False)
     parser.add_argument('-s4r', '--score4_reference', help = 'reference to be used in score4. all, sc, nonsc', default = 'all', required = False)
+    parser.add_argument('-use_option', '--usage_option', help = 'use all samples or randomly picked samples', required = True) # all, part
     return parser.parse_args()
 
 
