@@ -20,6 +20,7 @@ PMD_CPG_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/find-pmd/result' #
 FIRE_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-ACC TCGA-OV TCGA-LIHC TCGA-LUSC TCGA-PAAD'.split(' ')
 NORMAL_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-THYM TCGA-PRAD TCGA-GBM TCGA-READ TCGA-KIRC TCGA-ESCA TCGA-STAD TCGA-UCEC TCGA-KIRP TCGA-SARC TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-PCPG TCGA-SKCM TCGA-CESC TCGA-CHOL TCGA-PAAD TCGA-BRCA TCGA-COAD'.split(' ')
 ALL_COHORT = 'TCGA-LGG TCGA-UCS TCGA-BLCA TCGA-LUAD TCGA-THYM TCGA-PRAD TCGA-DLBC TCGA-ACC TCGA-KICH TCGA-GBM TCGA-READ TCGA-KIRC TCGA-LAML TCGA-ESCA TCGA-STAD TCGA-UCEC TCGA-KIRP TCGA-OV TCGA-SARC TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-PCPG TCGA-SKCM TCGA-TGCT TCGA-CESC TCGA-CHOL TCGA-PAAD TCGA-UVM TCGA-MESO TCGA-BRCA TCGA-COAD'.split(' ')
+SCORE3_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/downstream-analyses/result/' #{cohort}_score3.pickle #{cohort}/score3_simple_avg.pickle
 SAVEDIR = os.path.join(os.getcwd(), 'result')
 print("SAVEDIR: {}".format(SAVEDIR))
 
@@ -96,13 +97,18 @@ def integrate_abs_pc1(pc1_450k):
     area = simps(pc1_abs, np.arange(len(pc1_abs)))
     return area
 
-def import_score(cohort, score, reference, distance):#import score2 and score4
+def import_score(cohort, score, reference, distance):#import score2 and score4 #여기에 score3 추가. 
     if score=='score2':
         pickle_fname = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'+cohort+'/'+score+'_'+reference+'_'+distance+'.pickle'
         raw_score_df = pd.read_pickle(pickle_fname)
         mean_score = raw_score_df.mean(axis=1).values
         score_df = pd.DataFrame(mean_score, index = raw_score_df.index.values, columns = ['score2'])
          
+    elif score=='score3':
+        #SCORE3_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/downstream-analyses/result/'#{cohort}/score3_simple_avg.pickle
+        pickle_fname = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'+'TCGA-LIHC/'+'TCGA-LIHC'+'_score3.pickle'
+        raw_score_df = pd.read_pickle(pickle_fname)
+        
     elif score=='score4':
         pickle_fname = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'+cohort+'/score4_'+reference_score4+'_'+distance_score4+'.pickle'
         raw_score_df = pd.read_pickle(pickle_fname)
