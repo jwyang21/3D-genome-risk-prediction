@@ -15,6 +15,7 @@ random.seed(2022)
 np.random.seed(2022)
 import sys
 
+
 # # description
 # - normal reference를 계산
 # - avg_pc1 및 pc1_fluctuation의 두 가지 버전의 reference를 계산.
@@ -28,7 +29,7 @@ import sys
 # In[2]:
 
 
-os.chdir('/data/project/jeewon/research/3D-ITH/pipelines/compute-reference-v2/')
+os.chdir('/data/project/jeewon/research/3D-ITH/pipelines/compute-reference/')
 
 
 # In[48]:
@@ -44,7 +45,7 @@ NORMAL_BARCODES = ['10', '11', '12', '13','14', '15', '16', '17', '18', '19']
 #CHR_LENGTH = pd.read_csv('/data/project/jeewon/research/reference/GRCh37_hg19_chr_length.csv')[['Chromosome', 'Total_length']]
 #CPG_ANNOT = pd.read_csv('/data/project/3dith/data/humanmethylation450_15017482_v1-2.csv', skiprows = [0,1,2,3,4,5,6], index_col=0)
 TCGA_PC1_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/all-samples-pc1/result/' #/{cohort}/{sample}.npz or /{cohort}/{sample}_inv_exp.npz  #'chr1'
-PCBC_PC1_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/all-samples-pc1/result/pcbc/'#{sample}.npz or {sample}_inv_exp.npz #'chr1'
+PCBC_PC1_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/all-samples-pc1/result/PCBC/'#{sample}.npz or {sample}_inv_exp.npz #'chr1'
 METH_DIR = '/data/project/3dith/data/450k_xena/'#TCGA-[XXXX].HumanMethylation450.tsv'
 PMD_CPG_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/find-pmd/result' #./{cohort}/pmd_cpg.csv #columns: ['chrom','cpg']
 FIRE_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-ACC TCGA-OV TCGA-LIHC TCGA-LUSC TCGA-PAAD'.split(' ')
@@ -72,8 +73,9 @@ def parse_arguments():
     #parser.add_argument('-o', '--output', help='Output.', required=True)
     parser.add_argument('-ch', '--cohort', help = 'TCGA-cohort', required = True) #'TCGA-{}' or 'PCBC'
     #parser.add_argument('-cr', '--chrom', help = 'chromosome', required = True)
-    parser.add_argument('-r_type', '--reference_type', help = 'reference type. PCBC or TCGA', required = True) 
+    parser.add_argument('-r_type', '--reference_type', help = 'reference type. PCBC or TCGA', required = True) # 'TCGA' if 'TCGA' in args.cohort. else, 'PCBC'
     parser.add_argument('-s_type', '--score_type', help = 'score type', required = True) #avg_pc1 #pc1_fluctuation
+    parser.add_argument('-use_option', '--usage_option', help = 'use all samples or randomly picked samples', required = True) # all, part
     return parser.parse_args()
 
 
@@ -130,7 +132,6 @@ def import_pc1(cohort, sample, chrom, flag, ref_type):
 
 
 
-
 if __name__=='__main__':
     
     args = parse_arguments()
@@ -141,7 +142,7 @@ if __name__=='__main__':
     else: #TCGA cohort
         T, N, S = get_sample_list(args.cohort)
 
-    # TCGA 코호트이rh 현재 코호트의 normal이 7개 이상이면
+    # TCGA 코호트이고 현재 코호트의 normal이 7개 이상이면
     if 'TCGA' in args.cohort and len(N) >= 7:
         # 현재 코호트의 normal들 중 절반을 랜덤샘플링해서 sample name list 만들기. 
         sampled_N = random.sample(N, len(N)//2)
@@ -151,10 +152,12 @@ if __name__=='__main__':
     elif args.cohort=='PCBC':
         sampled_N = random.sample(S, len(S)//2) #여기서 randomly pick된 샘플들 이름, pick 안 된 샘플들 이름을 둘 다 저장해야 됨. (tcga도)
         excluded_N =list(set(S)-set(sampled_N))
+
         
     else:
         sys.exit('Stop execution! Number of normal samples in this cohort is smaller than 7\n----') #stop execution.
-    print("number of samples used to compute reference vector: {}".format(len(sampled_N)))
+    print("number of randomly picked normal samples: {}".format(len(sampled_N)))
+    print("Number of excluded normal samples: {}".format(len(excluded_N)))
     
     # make saving directories if needed. 
     if not os.path.exists(os.path.join(os.getcwd(), 'result')):
@@ -171,27 +174,57 @@ if __name__=='__main__':
     fname = os.path.join(SAVEDIR, 'picked-not-picked-samples')
     np.savez(fname, picked = np.array(sampled_N), excluded = np.array(excluded_N))
     print("names of randomly-picked or excluded samples: {}".format(fname+'.npz'))
-    
+
     # reference vector 계산. 
     # avg pc1 vector 구할 거면
     if args.score_type == 'avg_pc1':
-        print("Calculate average pc1 vectors for each chromosome")
         # import_pc1 함수 써서, 위에서 구한 random-sampled normal들에 대한 각 chromosome별 pc1 vector를 import.
-        for chrom in CHR_LIST:
-            for s in S:              
-                current_pc1 = import_pc1(args.cohort, s, chrom, 'inv', args.reference_type)
-                if S.index(s)==0:#if this is the first sample
-                    globals()['N_pc1_'+chrom] = current_pc1.copy()
-                else:
-                    globals()['N_pc1_'+chrom] = np.vstack((globals()['N_pc1_'+chrom], current_pc1))
-            # chromosome 별로 random-sampled normal들의 PC1 vector들을 평균내서, chromosome 별 reference avg pc1 vector 만들기.
-            
+        if args.usage_option == 'part': #use randomly picked samples to compute reference
+            for chrom in CHR_LIST:
+                for s in sampled_N:              
+                    current_pc1 = import_pc1(args.cohort, s, chrom, 'inv', args.reference_type)
+                    if sampled_N.index(s)==0:#if this is the first sample
+                        globals()['N_pc1_'+chrom] = current_pc1.copy()
+                    else:
+                        globals()['N_pc1_'+chrom] = np.vstack((globals()['N_pc1_'+chrom], current_pc1))
+                # chromosome 별로 random-sampled normal들의 PC1 vector들을 평균내서, chromosome 별 reference avg pc1 vector 만들기.
+                globals()['N_pc1_'+chrom+'_ref'] = globals()['N_pc1_'+chrom].mean(axis=0)
+            if 'TCGA' in args.cohort:
+                save_fname = os.path.join(SAVEDIR, 'sampled_N_avg_pc1')
+            else: #pcbc
+                save_fname = os.path.join(SAVEDIR, 'sampled_SC_avg_pc1')
 
+        elif args.usage_option == 'all': # use all samples to compute reference
+            if 'TCGA' in args.cohort:
+                for chrom in CHR_LIST:
+                    for s in N:              
+                        current_pc1 = import_pc1(args.cohort, s, chrom, 'inv', args.reference_type)
+                        if N.index(s)==0:#if this is the first sample
+                            globals()['N_pc1_'+chrom] = current_pc1.copy()
+                        else:
+                            globals()['N_pc1_'+chrom] = np.vstack((globals()['N_pc1_'+chrom], current_pc1))
+                    # chromosome 별로 random-sampled normal들의 PC1 vector들을 평균내서, chromosome 별 reference avg pc1 vector 만들기.
+                    globals()['N_pc1_'+chrom+'_ref'] = globals()['N_pc1_'+chrom].mean(axis=0)
+                save_fname = os.path.join(SAVEDIR, 'useall_N_avg_pc1')
+            else:#pcbc
+                for chrom in CHR_LIST:
+                    for s in S:              
+                        current_pc1 = import_pc1(args.cohort, s, chrom, 'inv', args.reference_type)
+                        if S.index(s)==0:#if this is the first sample
+                            globals()['N_pc1_'+chrom] = current_pc1.copy()
+                        else:
+                            globals()['N_pc1_'+chrom] = np.vstack((globals()['N_pc1_'+chrom], current_pc1))
+                    # chromosome 별로 random-sampled normal들의 PC1 vector들을 평균내서, chromosome 별 reference avg pc1 vector 만들기.
+                    globals()['N_pc1_'+chrom+'_ref'] = globals()['N_pc1_'+chrom].mean(axis=0)
+                save_fname = os.path.join(SAVEDIR, 'useall_SC_avg_pc1')
+            
                 
-            globals()['N_pc1_'+chrom+'_ref'] = globals()['N_pc1_'+chrom].mean(axis=0)
+
+        else:
+            sys.exit('wrong usage_option')
         # output: 각 chromosome 별 averaged-pc1-vector
         # 저장
-        save_fname = os.path.join(SAVEDIR, 'sampled_N_avg_pc1')
+        #save_fname = os.path.join(SAVEDIR, 'sampled_N_avg_pc1')
         np.savez(save_fname, chr1 = globals()['N_pc1_chr1_ref'], chr2 = globals()['N_pc1_chr2_ref'], chr3 = globals()['N_pc1_chr3_ref'], chr4 = globals()['N_pc1_chr4_ref'], 
                 chr5 = globals()['N_pc1_chr5_ref'], chr6 = globals()['N_pc1_chr6_ref'], chr7 = globals()['N_pc1_chr7_ref'], chr8 = globals()['N_pc1_chr8_ref'], chr9 = globals()['N_pc1_chr9_ref'],
                 chr10 = globals()['N_pc1_chr10_ref'], chr11 = globals()['N_pc1_chr11_ref'], chr12 = globals()['N_pc1_chr12_ref'], chr13 = globals()['N_pc1_chr13_ref'], chr14 = globals()['N_pc1_chr14_ref'],
@@ -201,25 +234,43 @@ if __name__=='__main__':
         print("----")
 
 
+
     # pc1 fluctuation 구할 거면
     elif args.score_type == 'pc1_fluctuation':
-        print("Compute pc1 fluctuation for each chromosome")
         # score3 import (pc1 vector를 절댓값 적분한 것)
         if args.reference_type == 'TCGA':
             score3_fname = os.path.join(TCGA_SCORE3_DIR, args.cohort, 'score3.pickle')
             score_df = pd.read_pickle(score3_fname)#row: sample  #column: chromosome
         elif args.reference_type == 'PCBC':
             score_df = pd.read_csv(PCBC_SCORE3_FILE, index_col = 0)
-        sampled_score_df = score_df.loc[sampled_N]
-        # 각 chromosome 별로 random-sampled normal들의 값들을 average해서 1개의 scalar 값을 얻음
-        globals()['N_pc1_fluctuation_avg'] = pd.DataFrame(sampled_score_df.mean(axis=0).values.flatten(), index = CHR_LIST, columns = ['avg_pc1_fluctuation'])
-        # output: 현재 cohort에 대한 (1, num_autosome) 크기의 1d array
-        # 저장  
-        save_fname = os.path.join(SAVEDIR, 'sampled_N_avg_pc1_fluctuation.csv')
+
+        if args.usage_option == 'part':
+            sampled_score_df = score_df.loc[sampled_N]
+            # 각 chromosome 별로 random-sampled normal들의 값들을 average해서 1개의 scalar 값을 얻음
+            globals()['N_pc1_fluctuation_avg'] = pd.DataFrame(sampled_score_df.mean(axis=0).values.flatten(), index = CHR_LIST, columns = ['avg_pc1_fluctuation'])
+            # output: 현재 cohort에 대한 (1, num_autosome) 크기의 1d array
+            # 저장  
+            if 'TCGA' in args.cohort:
+                save_fname = os.path.join(SAVEDIR, 'sampled_N_avg_pc1_fluctuation.csv')
+            else: #pcbc
+                save_fname = os.path.join(SAVEDIR, 'sampled_SC_avg_pc1_fluctuation.csv')
+           
+        elif args.usage_option == 'all':
+            if args.reference_type == 'TCGA':
+                sampled_score_df = score_df.loc[N]
+            else: #PCBC
+                sampled_score_df = score_df.loc[S]
+            globals()['N_pc1_fluctuation_avg'] = pd.DataFrame(sampled_score_df.mean(axis=0).values.flatten(), index = CHR_LIST, columns = ['avg_pc1_fluctuation'])
+            if 'TCGA' in args.cohort:
+                save_fname = os.path.join(SAVEDIR, 'useall_N_avg_pc1_fluctuation.csv')
+            else: #pcbc
+                save_fname = os.path.join(SAVEDIR, 'useall_SC_avg_pc1_fluctuation.csv')
+        else:
+            sys.exit('wrong usage option')
         globals()['N_pc1_fluctuation_avg'].to_csv(save_fname, index=True)
         print('result file: {}'.format(save_fname))
         print("----")
 
     else:
-        pass
+        sys.exit("wrong score_type")
 
