@@ -31,17 +31,19 @@ SAMPLE_NAME_FILE = '/data/project/jeewon/research/3D-ITH/data/samplename.npz'#it
 CHR_LIST = ['chr'+str(i) for i in np.arange(1, 23)]
 print("SAVEDIR: {}".format(SAVEDIR))
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    #parser.add_argument('-i', '--input', help='Beta bedgraph file.', required=True)
-    #parser.add_argument('-s', '--chrom-size', help='Chromosome size table.', required=True)
     #parser.add_argument('-b', '--binsize', type=int, default=int(1e6))
-    #parser.add_argument('-c', '--n-min-cpgs', type=int, default=1)
-    #parser.add_argument('-o', '--output', help='Output.', required=True)
-    parser.add_argument('-ch', '--cohort', help = 'TCGA-cohort', required = True)
-    parser.add_argument('-cr', '--chrom', help = 'chromosome', required = True)
-
+    parser.add_argument('-ch', '--cohort', help = 'TCGA-cohort', required = True) #'TCGA-{}' or 'PCBC'
+    #parser.add_argument('-cr', '--chrom', help = 'chromosome', required = True)
+    parser.add_argument('-r_type', '--reference_type', help = 'reference type. PCBC or TCGA', required = True) #computing reference-v2
+    parser.add_argument('-s_type', '--score_type', help = 'score type', required = True) #avg_pc1 #pc1_fluctuation #computing reference-v2
+    parser.add_argument('-s2r', '--score2_reference', help = 'reference to be used in score2. fire or normal', default = 'NORMAL', required = False)
+    parser.add_argument('-d', '--distance_metric', help = 'distance metric to be used in either score2 or score4. euclidean, jsd, or cosine-similarity', defulat = 'euclidean', required = False)
+    parser.add_argument('-s4r', '--score4_reference', help = 'reference to be used in score4. all, sc, nonsc', default = 'all', required = False)
     return parser.parse_args()
+
 
 def preprocess_cpg_annot(CPG_ANNOT):
     CPG_ANNOT2 = CPG_ANNOT[CPG_ANNOT['CHR'].notnull()] #drop any row whose chrom value is null.
