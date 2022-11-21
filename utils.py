@@ -124,3 +124,22 @@ def compute_angle(x, y):#1사분면에서 (x,y)가 주어졌을때, (0,0)과 (x,
     cosine_radian = math.cos(radian_theta) 
     '''
     return radian_theta, degree_theta, cosine_radian
+
+
+
+'''
+# starting main()
+if __name__=='__main__':
+    
+    args = parse_arguments()
+    
+    SAVEDIR = os.path.join(os.getcwd(), 'result', args.cohort)
+    
+    if not os.path.exists(os.path.join(os.getcwd(), 'result')):
+        os.makedirs(os.path.join(os.getcwd(), 'result'))
+    if not os.path.exists(SAVEDIR):
+        os.makedirs(SAVEDIR)
+    
+    print("cohort: {}".format(args.cohort))
+    print("SAVEDIR: {}".format(SAVEDIR))
+'''
