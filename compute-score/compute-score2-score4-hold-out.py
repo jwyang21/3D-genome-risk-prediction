@@ -81,7 +81,9 @@ def parse_arguments():
     parser.add_argument('-ch', '--cohort', help = 'TCGA-cohort', required = True)
     #parser.add_argument('-s4d', '--score4_distance', help = 'distance metric to be used in score4. euclidean, jsd, or cosine-similarity', defulat = 'euclidean', required = False)
     #parser.add_argument('-s4r', '--score4_reference', help = 'reference to be used in score4. all, sc, nonsc', default = 'all', required = False)
-    parser.add_argument('-ref_type', '--reference_type', help = 'reference to be used in score2 or score4. TCGA or PCBC', required = True)
+    parser.add_argument('-ref_type', '--reference_type', help = 'reference to be used in score2 or score4. TCGA or PCBC', required = True) 
+    # (cohort, ref_type) = (TCGA, TCGA): score 2 of each TCGA sample
+    # (cohort, ref_type) = (TCGA, PCBC): score 4 of each TCGA sample. 
     parser.add_argument('-s_type', '--score_type', help = 'which one you will use among PC1 fluctuation or averaged PC1 vector. avg_pc1 or pc1_fluctuation', required = True)
     return parser.parse_args()
 
