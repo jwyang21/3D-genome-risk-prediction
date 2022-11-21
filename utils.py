@@ -54,20 +54,24 @@ def preprocess_cpg_annot(CPG_ANNOT):
 def get_sample_list(cohort):
     # sample list of input TCGA cohort
     samples = np.load(SAMPLE_NAME_FILE)[cohort+'_samples']
-    T = []
-    N = []
-    S = [] #all samples
-    for s in samples:
-        if int(s[13:15]) >= 1 and int(s[13:15]) <= 9: #tumor barcode: '01' ~ '09'
-            T.append(s)
-        elif int(s[13:15]) >=10 and int(s[13:15]) <= 19:
-            N.append(s)
-        else:
-            pass
-    S = T + N
-    print("{}: tumor {}, normal {}, total {}".format(cohort, len(T), len(N), len(S)))
+    if cohort=='PCBC':
+        return samples.tolist()
+    else: #TCGA cohort
+        T = []
+        N = []
+        S = [] #all samples
+        for s in samples:
+            if int(s[13:15]) >= 1 and int(s[13:15]) <= 9: #tumor barcode: '01' ~ '09'
+                T.append(s)
+            elif int(s[13:15]) >=10 and int(s[13:15]) <= 19:
+                N.append(s)
+            else:
+                pass
+        S = T + N
+        print("{}: tumor {}, normal {}, total {}".format(cohort, len(T), len(N), len(S)))
 
-    return T, N, S
+        return T, N, S
+
 
 def import_binned_diffmat(cohort, sample, chrom):
     # return a binned diffmat
