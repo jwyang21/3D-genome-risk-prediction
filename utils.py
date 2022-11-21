@@ -78,14 +78,14 @@ def pc1(m):
     #print('-----')
     return pc1
 
-def import_pc1(cohort, sample, chrom, flag):
+def import_pc1(cohort, sample, chrom, flag, ref_type):
     # import pre-computed PC1 of sample-of-interest
+    # ref_type: 'TCGA' or 'PCBC'. Type of reference you want to import. 
     if flag=='raw':
-        fname = os.path.join(PC1_DIR, cohort, sample+'.npz')
+        fname = os.path.join(globals()[ref_type+'_PC1_DIR'], cohort, sample+'.npz')
     elif flag=='inv':
-        fname = os.path.join(PC1_DIR, cohort, sample+'_inv_exp.npz')
-    pc1 = np.load(fname)[chrom]
-
+        fname = os.path.join(globals()[ref_type+'_PC1_DIR'], cohort, sample+'_inv_exp.npz')
+    pc1 = np.load(fname)[chrom]#'chr1', 'chr2', ...
     return pc1
 
 def integrate_abs_pc1(pc1_450k): 
