@@ -145,10 +145,13 @@ if __name__=='__main__':
     if 'TCGA' in args.cohort and len(N) >= 7:
         # 현재 코호트의 normal들 중 절반을 랜덤샘플링해서 sample name list 만들기. 
         sampled_N = random.sample(N, len(N)//2)
+        excluded_N =list(set(N)-set(sampled_N))
 
     # PCBC이면
     elif args.cohort=='PCBC':
-        sampled_N = random.sample(S, len(S)//2)
+        sampled_N = random.sample(S, len(S)//2) #여기서 randomly pick된 샘플들 이름, pick 안 된 샘플들 이름을 둘 다 저장해야 됨. (tcga도)
+        excluded_N =list(set(S)-set(sampled_N))
+        
     else:
         sys.exit('Stop execution! Number of normal samples in this cohort is smaller than 7\n----') #stop execution.
     print("number of samples used to compute reference vector: {}".format(len(sampled_N)))
@@ -162,7 +165,12 @@ if __name__=='__main__':
     if not os.path.exists(SAVEDIR):
         os.makedirs(SAVEDIR)
 
-    print("SAVEDIR: {}".format(SAVEDIR))    
+    print("SAVEDIR: {}".format(SAVEDIR))   
+    
+    # save samplenames which are randomly-picked or excluded
+    fname = os.path.join(SAVEDIR, 'picked-not-picked-samples')
+    np.savez(fname, picked = np.array(sampled_N), excluded = np.array(excluded_N))
+    print("names of randomly-picked or excluded samples: {}".format(fname+'.npz'))
     
     # reference vector 계산. 
     # avg pc1 vector 구할 거면
