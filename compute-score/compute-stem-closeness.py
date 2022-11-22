@@ -207,7 +207,7 @@ if __name__ == '__main__':
     print("(mean, std) = ({}, {})".format(np.mean(normal_score), np.std(normal_score)))
 
     print("5. scatter plot (x: normal_distance, y: stem_distance")
-    scatter_distances(normal_distance, stem_distance, final_df, T, N, args.cohort, args.score_type, 'scatter-normal-stem-distances_'+args.score_type+'.png')
+    scatter_distances(normal_distance, stem_distance, final_df, T, N, args.cohort, args.score_type, 'scatter-normal-stem-distances_'+args.score_type+'_'+args.usage_option+'.png')
     print('===')
     plt.clf()
 
