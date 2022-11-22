@@ -32,6 +32,7 @@ CHR_LIST = ['chr'+str(i) for i in np.arange(1, 23)]
 ALL_COHORT_W_PCBC = ALL_COHORT.copy()
 ALL_COHORT_W_PCBC.append('PCBC')
 print("SAVEDIR: {}".format(SAVEDIR))
+BINNED_DIFFMAT_BINS = '/data/project/jeewon/research/3D-ITH/pipelines/etc/binned-diffmat-bins' #pcbc_bins.npz #{TCGA_cohort}_diffmat_bins.npz
 
 
 def parse_arguments():
