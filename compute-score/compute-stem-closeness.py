@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[28]:
+# In[37]:
 
 
 import argparse
@@ -14,6 +14,8 @@ np.random.seed(2022)
 import math
 import os
 from scipy.stats import ttest_ind
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 
 # ### reference
@@ -23,6 +25,15 @@ from scipy.stats import ttest_ind
 
 
 os.chdir('/data/project/jeewon/research/3D-ITH/pipelines/compute-score')
+
+
+# In[38]:
+
+
+# default figure setting
+mpl.rcParams['figure.dpi'] = 150
+plt.rc('font', family = 'FreeSans', size = 7)
+plt.rc('figure', figsize = (1.5, 1.5))
 
 
 # In[24]:
@@ -64,7 +75,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--cohort', help = 'TCGA cohort or PCBC', type = str, required = True)
     parser.add_argument('-s_type', '--score_type', help = 'which one you will use among PC1 fluctuation or averaged PC1 vector. avg_pc1 or pc1_fluctuation', required = True)
-    parser.add_argument('-use_option', '--usage_option', help = 'use all samples or randomly picked samples', default = 'part', required = False) # all, part
+    parser.add_argument('-use_option', '--usage_option', help = 'use all samples or randomly picked samples. all or part', default = 'part', required = False) # all, part
     return parser.parse_args()
 
 
@@ -121,6 +132,26 @@ def compute_angle(x, y):
     return radian_theta, degree_theta, cosine_radian
 
 
+# In[75]:
+
+
+def scatter_distances(normal_distance, stem_distance, final_df, T, N, cohort, score_type, figure_name):
+    max_distance = max(np.max(normal_distance), np.max(stem_distance))
+    fig = plt.figure(figsize = (3,3))
+    ax1 = fig.add_subplot(111)
+    ax1.scatter(final_df.loc[T].copy().normal_distance.values.flatten(), final_df.loc[T].copy().stem_distance.values.flatten(), label = 'Tumor')
+    ax1.scatter(final_df.loc[N].copy().normal_distance.values.flatten(), final_df.loc[N].copy().stem_distance.values.flatten(), label = 'Normal')
+    ax1.plot(np.arange(0, round(max_distance)), np.arange(0, round(max_distance)) , label = 'y = x', color = 'k')
+    ax1.set_xlabel('normal_distance')
+    ax1.set_ylabel('stem_distance')
+    ax1.set_title('Scatter plot of distances ({}, {})'.format(cohort, score_type))
+    ax1.legend()
+    fig.tight_layout()
+    full_figname = os.path.join(SAVEDIR, figure_name)
+    plt.savefig(full_figname)
+    print("scatter plot: {}".format(full_figname))
+
+
 
 if __name__ == '__main__':
     args = parse_arguments()
@@ -174,4 +205,9 @@ if __name__ == '__main__':
     print("(mean, std) = ({}, {})".format(np.mean(tumor_score), np.std(tumor_score)))
     print("---\nNormal score mean and std")
     print("(mean, std) = ({}, {})".format(np.mean(normal_score), np.std(normal_score)))
+
+    print("5. scatter plot (x: normal_distance, y: stem_distance")
+    scatter_distances(normal_distance, stem_distance, final_df, T, N, args.cohort, args.score_type, 'scatter-normal-stem-distances_'+args.score_type+'.png')
+    print('===')
+    plt.clf()
 
