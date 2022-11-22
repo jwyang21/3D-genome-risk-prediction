@@ -7,6 +7,12 @@ from scipy.integrate import simps
 import random
 random.seed(2022)
 np.random.seed(2022)
+import os
+from scipy.stats import ttest_ind
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from scipy.stats import ttest_ind
+
 
 CHROMOSOMES = [f'chr{i}' for i in range(1, 23)] + ['chrX', 'chrY']
 DATA_DIR = '/data/project/jeewon/research/3D-ITH/data'
@@ -23,6 +29,7 @@ METH_DIR = '/data/project/3dith/data/450k_xena/'#TCGA-[XXXX].HumanMethylation450
 PMD_CPG_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/find-pmd/result' #./{cohort}/pmd_cpg.csv #columns: ['chrom','cpg']
 FIRE_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-ACC TCGA-OV TCGA-LIHC TCGA-LUSC TCGA-PAAD'.split(' ')
 NORMAL_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-THYM TCGA-PRAD TCGA-GBM TCGA-READ TCGA-KIRC TCGA-ESCA TCGA-STAD TCGA-UCEC TCGA-KIRP TCGA-SARC TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-PCPG TCGA-SKCM TCGA-CESC TCGA-CHOL TCGA-PAAD TCGA-BRCA TCGA-COAD'.split(' ')
+NORMAL7_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-PRAD TCGA-KIRC TCGA-ESCA TCGA-UCEC TCGA-KIRP TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-CHOL TCGA-PAAD TCGA-BRCA TCGA-COAD'.split(' ')
 ALL_COHORT = 'TCGA-LGG TCGA-UCS TCGA-BLCA TCGA-LUAD TCGA-THYM TCGA-PRAD TCGA-DLBC TCGA-ACC TCGA-KICH TCGA-GBM TCGA-READ TCGA-KIRC TCGA-LAML TCGA-ESCA TCGA-STAD TCGA-UCEC TCGA-KIRP TCGA-OV TCGA-SARC TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-PCPG TCGA-SKCM TCGA-TGCT TCGA-CESC TCGA-CHOL TCGA-PAAD TCGA-UVM TCGA-MESO TCGA-BRCA TCGA-COAD'.split(' ')
 TCGA_SCORE3_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'#{cohort}/score3_simple_avg.pickle
 PCBC_SCORE3_FILE = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/PCBC/integrate-pcbc-abs-pc1.csv'
@@ -33,6 +40,7 @@ ALL_COHORT_W_PCBC = ALL_COHORT.copy()
 ALL_COHORT_W_PCBC.append('PCBC')
 print("SAVEDIR: {}".format(SAVEDIR))
 BINNED_DIFFMAT_BINS = '/data/project/jeewon/research/3D-ITH/pipelines/etc/binned-diffmat-bins' #pcbc_bins.npz #{TCGA_cohort}_diffmat_bins.npz
+P_THRESHOLD = 5e-2
 
 
 def parse_arguments():
@@ -77,6 +85,11 @@ def get_sample_list(cohort):
         return T, N, S
 
 
+# default figure setting
+mpl.rcParams['figure.dpi'] = 150
+plt.rc('font', family = 'FreeSans', size = 7)
+plt.rc('figure', figsize = (1.5, 1.5))
+    
 def import_binned_diffmat(cohort, sample, chrom):
     # return a binned diffmat
     fname = os.path.join(BINNED_DIFFMAT_DIR, cohort, sample+'.npz')
@@ -162,6 +175,21 @@ def compute_angle(x, y):#1사분면에서 (x,y)가 주어졌을때, (0,0)과 (x,
     '''
     return radian_theta, degree_theta, cosine_radian
 
+def compare_tumor_normal(score_df):
+    #score_df should be a dataframe whose indices are sample names and have one column (score)
+    ## here, name of the score column is 'cos_radian' (stem-closeness)
+    tumor_mask = np.array([int(x[13:15])<=9 for x in score_df.index.values])
+    tumor_score = score_df.iloc[tumor_mask,:].cos_radian.values.flatten()
+    normal_score = score_df.iloc[~tumor_mask,:].cos_radian.values.flatten()
+    print("---\nIndependent t-test between tumor and normal score")
+    print(ttest_ind(tumor_score, normal_score))
+    if ttest_ind(tumor_score, normal_score)[1]<=P_THRESHOLD:
+        print("significant. p-value {} <= {}".format(ttest_ind(tumor_score, normal_score)[1], P_THRESHOLD))
+    print("---\nTumor score mean and std")
+    print("(mean, std) = ({}, {})".format(np.mean(tumor_score), np.std(tumor_score)))
+    print("---\nNormal score mean and std")
+    print("(mean, std) = ({}, {})".format(np.mean(normal_score), np.std(normal_score)))
+    
 
 
 '''
