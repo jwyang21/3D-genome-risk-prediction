@@ -3,6 +3,8 @@
 
 # In[ ]:
 
+# compute distance from normal reference (score2) # args.reference_type == 'TCGA'
+# compute distance from stem cell reference (score4) # args.reference_type == 'PCBC'
 
 #!/usr/bin/env python
 # coding: utf-8
