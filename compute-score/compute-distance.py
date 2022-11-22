@@ -6,9 +6,6 @@
 # compute distance from normal reference (score2) # args.reference_type == 'TCGA'
 # compute distance from stem cell reference (score4) # args.reference_type == 'PCBC'
 
-#!/usr/bin/env python
-# coding: utf-8
-
 
 # - update on 22/11/21: reference 계산 시 전체 normal sample들을 다 쓰지 말고, normal들 중 50%를 hold out & normal sample 개수가 7개 이상인 cohort만 쓰기.
 # - fix score2_reference and score2_distance as normal and euclidean, respectively.
@@ -201,13 +198,14 @@ if __name__ == '__main__':
                         ref_pc1_fname = os.path.join(REFERENCE_S2_S4_DIR, args.reference_type, 'useall_SC_avg_pc1.npz')
                     else: #args.uage_option == 'part':
                         ref_pc1_fname = os.path.join(REFERENCE_S2_S4_DIR, args.reference_type, 'sampled_SC_avg_pc1.npz')
-                
                     ref_pc1 = np.load(ref_pc1_fname)[chrom].flatten()
-                    #만약 args.cohort도 pcbc고 args.reference_type도 pcbc
-                    sample_pc1_intersect_ref = sample_pc1[globals()[args.cohort+'_'+chrom+'_bins_mask']]
-                    ref_pc1_intersect_sample = ref_pc1[globals()['PCBC'+chrom+'_bins_mask']]
-                
-                    score = euclidean(sample_pc1_intersect_ref, ref_pc1_intersect_sample)
+                    #만약 args.cohort도 pcbc고 args.reference_type도 pcbc면 masking 안해도된다
+                    if 'TCGA' in args.cohort:
+                        sample_pc1_intersect_ref = sample_pc1[globals()[args.cohort+'_'+chrom+'_bins_mask']]
+                        ref_pc1_intersect_sample = ref_pc1[globals()['PCBC'+chrom+'_bins_mask']]
+                        score = euclidean(sample_pc1_intersect_ref, ref_pc1_intersect_sample)
+                    else: #args.cohort == 'PCBC'
+                        score = euclidean(sample_pc1, ref_pc1)
                     score_list.append(score)
             all_score_df.loc[s] = score_list
         simple_avg = all_score_df.mean(axis = 1).values #rowmean
