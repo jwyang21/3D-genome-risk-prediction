@@ -42,6 +42,7 @@ print("SAVEDIR: {}".format(SAVEDIR))
 BINNED_DIFFMAT_BINS = '/data/project/jeewon/research/3D-ITH/pipelines/etc/binned-diffmat-bins' #pcbc_bins.npz #{TCGA_cohort}_diffmat_bins.npz
 P_THRESHOLD = 5e-2
 SCORE2_4_MINMAX_FILE = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/score2_score4_minmax.txt'
+NORMAL_STEM_DISTANCE_MINMAX = pd.read_csv('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/normal-stem-distance-min-max.csv', index_col = 0)
 
 
 def parse_arguments():
