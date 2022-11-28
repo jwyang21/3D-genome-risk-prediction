@@ -56,6 +56,8 @@ def parse_arguments():
     parser.add_argument('-d', '--distance_metric', help = 'distance metric to be used in either score2 or score4. euclidean, jsd, or cosine-similarity', defulat = 'euclidean', required = False)
     parser.add_argument('-s4r', '--score4_reference', help = 'reference to be used in score4. all, sc, nonsc', default = 'all', required = False)
     parser.add_argument('-use_option', '--usage_option', help = 'use all samples or randomly picked samples', required = True) # all, part
+    parser.add_argument('-n', '--normalize', help = 'whether you wnat to normalize score2 and score4 or not', default = 'N', required = False)#Y or N
+    parser.add_argument('-m', '--minmax', help = 'use minmax scaling', default = 'N', required = False) #Y or N
     return parser.parse_args()
 
 
