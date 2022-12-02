@@ -16,7 +16,7 @@
   - cosine(theta)
     - theta: 각 샘플을 (x, y) = (score2, score4) 로 cartesian 좌표평면에 나타냈을 때, 원점으로부터 각 sample의 line과 x축간의 각도
     - theta 값 구하기 전에 score2와 score4는 각 cohort별로 minmax scaling해서 [0,1]로 맞춰줌.
-- stem_closeness:
+- stem_closeness: 
   - score7 계산 과정에서, 아래를 변경
     - reference 값 만들 때, all available sample들 중 절반을 randomly pick해서 사용. (info leak 방지)
     - sklearn의 minmax_scaler 쓰지 말고, 각 cohort의 각 score 별 min & max 값 저장한 table 만든 후, 이 table에 있는 값을 사용
@@ -26,5 +26,6 @@
     - minmax: normalize 사용했더니 avg. openseas beta value와 stem_closeness 간 significant pcc 발견돼서 추가함.
       - scikit-learn의 minmax_scaler에서 사용하는 수식과 약간 다름
         - my implementation: (샘플의 score - 이 샘플이 속한 cohort의 min score) / (이 샘플이 속한 cohort의 max score - min score)
+  - default setting: normalize = 'N', minmax = 'Y'
 ## Benchmark
 - https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0741-y
