@@ -194,7 +194,14 @@ def compare_tumor_normal(score_df):
     print("---\nNormal score mean and std")
     print("(mean, std) = ({}, {})".format(np.mean(normal_score), np.std(normal_score)))
     
-
+def get_cpg_list(chr_list): #get list of opensea CpG probes
+    total_list = np.array([])
+    for chrom in chr_list:
+        fname = '/data/project/jeewon/research/3D-ITH/binned_diff/snake/'+chrom+'_opensea_CpG.pickle'
+        cpgs = pd.read_pickle(fname).index.values
+        total_list = np.union1d(total_list, cpgs)
+        
+    return total_list 
 
 '''
 # starting main()
