@@ -21,5 +21,10 @@
     - reference 값 만들 때, all available sample들 중 절반을 randomly pick해서 사용. (info leak 방지)
     - sklearn의 minmax_scaler 쓰지 말고, 각 cohort의 각 score 별 min & max 값 저장한 table 만든 후, 이 table에 있는 값을 사용
       - 새로운 test sample이 input되었다고 할때, 그 sample 자체의 값은 minmax_scaling 과정에서 제외되어야 하므로.
+  - two options
+    - normalize: 각 sample의 score를 그 sample이 속한 cohort의 score 값들 중 max 값으로 나눈다 -> 1 이하의 범위로 맞추기 위해
+    - minmax: normalize 사용했더니 avg. openseas beta value와 stem_closeness 간 significant pcc 발견돼서 추가함.
+      - scikit-learn의 minmax_scaler에서 사용하는 수식과 약간 다름
+        - my implementation: (샘플의 score - 이 샘플이 속한 cohort의 min score) / (이 샘플이 속한 cohort의 max score - min score)
 ## Benchmark
 - https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0741-y
