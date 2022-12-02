@@ -203,6 +203,86 @@ def get_cpg_list(chr_list): #get list of opensea CpG probes
         
     return total_list 
 
+def get_sample_score(cohort, score_type, S, stemness_type, normalize, minmax):
+    # 이 코호트의 모든 샘플들의 score 불러오기 (score2, score3, score4)
+    if score_type == 'score2':
+        score2 = pd.read_pickle('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'+cohort+'/score2_normal_euclidean.pickle')
+        #display(score2.head(3))
+        #print(score2.index.values[:5])
+        #print(score2.mean(axis = 1).values[:5])
+        #print(len(score2.index.values)==len(score2.mean(axis = 1)))
+        samples = score2.index.values.flatten()
+        scores = score2.mean(axis = 1).values.flatten()
+    elif score_type == 'score3':
+        # score3 예시
+        score3 = pd.read_pickle('/data/project/jeewon/research/3D-ITH/pipelines/downstream-analyses/result/'+cohort+'/score3_simple_avg.pickle')
+        #display(score3.head(3))
+        #print(score3.index.values[:5])
+        #print(score3.simple_avg.values.flatten()[:5])
+        #print(len(score3.index.values)==len(score3.simple_avg.values.flatten()))
+        samples = score3.index.values.flatten()
+        scores = score3.simple_avg.values.flatten()
+    elif score_type == 'score4':
+        score4 = pd.read_pickle('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'+cohort+'/score4_'+'all'+'_'+'euclidean'+'.pickle')
+        #display(score4.head(3))
+        #print(score4.index.values[:5])
+        #print(score4.simple_avg.values.flatten()[:5])
+        #print(len(score4.index.values)==len(score4.simple_avg.values.flatten()))
+        samples = score4.index.values.flatten()
+        scores = score4.simple_avg.values.flatten()
+        
+    elif score_type == 'score5':
+        scores = np.load('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'+cohort+'/score2345.npz', allow_pickle=True)['score5']
+        samples = np.load('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/'+cohort+'/score2345.npz', allow_pickle=True)['rownames']
+    
+    elif score_type == 'score7': #version 1 (use all available samples to compute reference)
+        df = pd.read_csv(os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result', cohort, 'score7.csv'), index_col=0) #index should be sample name.
+        scores = df['cos_radian'].values.flatten()
+        samples = df.index.values
+        print("samples")
+        print(samples)
+    
+    elif score_type == 'score7-without-minmax':
+        df = pd.read_csv(os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result', cohort, 'score7-without-minmax.csv'), index_col = 0).loc[S]
+        scores = df['cos_radian'].values.flatten()
+        samples = df.index.values
+        
+    elif score_type == 'stem_closeness':
+        if stemness_type == 'avg_pc1':
+            if normalize == 'Y':
+                df = pd.read_csv(os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/', 
+                                              cohort, 'stem-closeness_avg_pc1_part_normalized.csv'), index_col=0) #index should be sample name.
+            else:
+                if minmax=='Y':
+                    pd.read_csv(os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/', 
+                                              cohort, 'stem-closeness_avg_pc1_part_minmax.csv'), index_col = 0)
+                else:
+                    df = pd.read_csv(os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/', 
+                                              cohort, 'stem-closeness_avg_pc1_part.csv'), index_col=0) #index should be sample name.
+            
+        
+        else: #pc1_fluctuation
+            if normalize == 'Y':
+                df = pd.read_csv(os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/', 
+                                              cohort, 'stem-closeness_pc1_fluctuation_part_normalized.csv'), index_col=0)
+            else:
+                df = pd.read_csv(os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/', 
+                                              cohort, 'stem-closeness_pc1_fluctuation_part.csv'), index_col=0)
+                
+        #df = pd.read_csv(os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/', cohort, 'stem-closeness_avg_pc1_part.csv'), index_col=0) #index should be sample name.
+        # #index should be sample name.
+        #df = pd.read_csv(os.path.join('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/', cohort, 'stem-closeness_avg_pc1_all.csv'), index_col=0)
+        scores = df['cos_radian'].values.flatten()
+        samples = df.index.values     
+    
+    else:
+        pass
+    
+    df = pd.DataFrame(scores, index = samples, columns = ['score'])
+    
+    #df = pd.DataFrame(zip(samples, scores), columns = ['sample', 'score'])
+    return df.loc[S]
+
 '''
 # starting main()
 if __name__=='__main__':
