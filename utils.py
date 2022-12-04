@@ -48,6 +48,7 @@ BINNED_DIFFMAT_BINS = '/data/project/jeewon/research/3D-ITH/pipelines/etc/binned
 P_THRESHOLD = 5e-2
 SCORE2_4_MINMAX_FILE = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/score2_score4_minmax.txt'
 NORMAL_STEM_DISTANCE_MINMAX = pd.read_csv('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/normal-stem-distance-min-max.csv', index_col = 0)
+CGC = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/cgc/cancer-gene-census.csv')
 
 
 def parse_arguments():
