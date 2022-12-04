@@ -21,11 +21,12 @@ BINNED_DIFFMAT_DIR = '/data/project/3dith/pipelines/binned-difference-matrix-v2/
 TUMOR_BARCODES = ['01', '02', '03','04', '05', '06', '07', '08', '09']
 NORMAL_BARCODES = ['10', '11', '12', '13','14', '15', '16', '17', '18', '19']
 ## TCGA barcode: Tumor types range from 01 - 09, normal types from 10 - 19 and control samples from 20 - 29. See Code Tables Report for a complete list of sample codes
-#CHR_LENGTH = pd.read_csv('/data/project/jeewon/research/reference/GRCh37_hg19_chr_length.csv')[['Chromosome', 'Total_length']]
+
+CHR_LENGTH = pd.read_csv('/data/project/jeewon/research/reference/GRCh37_hg19_chr_length.csv')[['Chromosome', 'Total_length']]
+CHR_LENGTH.columns = ['chrom', 'len'] #current_chrom_len = int(CHR_LENGTH[CHR_LENGTH['chrom']=='chr1'].len.values[0])
+
 CPG_ANNOT = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/illumina/humanmethylation450_15017482_v1-2.csv', skiprows = [0,1,2,3,4,5,6], index_col=0)
-
 CPG_METADATA = pd.read_csv('/data/project/3dith/data/450k_metadata.open_sea.sorted.bed', header=None, sep = '\t') # columns = ['chrom', 'start', 'end', 'cpg'] # use this!!
-
 
 TCGA_PC1_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/all-samples-pc1/result/' #/{cohort}/{sample}.npz or /{cohort}/{sample}_inv_exp.npz  #'chr1'
 PCBC_PC1_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/all-samples-pc1/result/PCBC/'#{sample}.npz or {sample}_inv_exp.npz #'chr1'
