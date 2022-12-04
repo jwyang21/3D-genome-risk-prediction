@@ -23,7 +23,8 @@ NORMAL_BARCODES = ['10', '11', '12', '13','14', '15', '16', '17', '18', '19']
 ## TCGA barcode: Tumor types range from 01 - 09, normal types from 10 - 19 and control samples from 20 - 29. See Code Tables Report for a complete list of sample codes
 #CHR_LENGTH = pd.read_csv('/data/project/jeewon/research/reference/GRCh37_hg19_chr_length.csv')[['Chromosome', 'Total_length']]
 CPG_ANNOT = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/illumina/humanmethylation450_15017482_v1-2.csv', skiprows = [0,1,2,3,4,5,6], index_col=0)
-CPG_METADATA = pd.read_csv('/data/project/3dith/data/450k_metadata.open_sea.sorted.bed', header=None, sep = '\t') # columns = ['chrom', 'start', 'end', 'cpg']
+
+CPG_METADATA = pd.read_csv('/data/project/3dith/data/450k_metadata.open_sea.sorted.bed', header=None, sep = '\t') # columns = ['chrom', 'start', 'end', 'cpg'] # use this!!
 
 
 TCGA_PC1_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/all-samples-pc1/result/' #/{cohort}/{sample}.npz or /{cohort}/{sample}_inv_exp.npz  #'chr1'
@@ -296,6 +297,7 @@ def get_cpg_list(chr_list):
     return total_list 
 
 def confirm_cpg_list_concordance(CHR_LIST):#binned diffmat 제작할때 쓴 opensea cpg probe들의 목록이 일치하는지 확인 
+    #지금은 binned diffmat 버전을 CPG_METADATA 바탕으로 만들어진 버전으로 일괄적으로 사용하므로 필요x
     for x in CHR_LIST:
         df_tmp = df[df['chrom']==x]
         value1 = pd.read_pickle('/data/project/jeewon/research/3D-ITH/binned_diff/snake/'+x+'_opensea_CpG.pickle').shape[0]
