@@ -283,6 +283,15 @@ def get_sample_score(cohort, score_type, S, stemness_type, normalize, minmax):
     #df = pd.DataFrame(zip(samples, scores), columns = ['sample', 'score'])
     return df.loc[S]
 
+def get_cpg_list(chr_list):
+    total_list = np.array([])
+    for chrom in chr_list:
+        fname = '/data/project/jeewon/research/3D-ITH/binned_diff/snake/'+chrom+'_opensea_CpG.pickle'
+        cpgs = pd.read_pickle(fname).index.values
+        total_list = np.union1d(total_list, cpgs)
+        
+    return total_list 
+
 '''
 # starting main()
 if __name__=='__main__':
