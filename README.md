@@ -28,4 +28,5 @@
         - my implementation: (샘플의 score - 이 샘플이 속한 cohort의 min score) / (이 샘플이 속한 cohort의 max score - min score)
   - default setting: normalize = 'N', minmax = 'Y'
 ## Benchmark
+Fortin, Jean-Philippe, and Kasper D. Hansen. "Reconstructing A/B compartments as revealed by Hi-C using long-range correlations in epigenetic data." Genome biology 16.1 (2015): 1-23.
 - https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0741-y
