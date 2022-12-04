@@ -295,6 +295,13 @@ def get_cpg_list(chr_list):
         
     return total_list 
 
+def confirm_cpg_list_concordance(CHR_LIST):#binned diffmat 제작할때 쓴 opensea cpg probe들의 목록이 일치하는지 확인 
+    for x in CHR_LIST:
+        df_tmp = df[df['chrom']==x]
+        value1 = pd.read_pickle('/data/project/jeewon/research/3D-ITH/binned_diff/snake/'+x+'_opensea_CpG.pickle').shape[0]
+        value2 = df_tmp.shape[0]
+        assert value1==value2
+
 '''
 # starting main()
 if __name__=='__main__':
