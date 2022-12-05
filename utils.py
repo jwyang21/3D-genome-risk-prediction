@@ -49,7 +49,7 @@ P_THRESHOLD = 5e-2
 SCORE2_4_MINMAX_FILE = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/score2_score4_minmax.txt'
 NORMAL_STEM_DISTANCE_MINMAX = pd.read_csv('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/normal-stem-distance-min-max.csv', index_col = 0)
 CGC = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/cgc/cancer-gene-census.csv')
-
+CLINICAL_FNAME = pd.read_csv('/data/project/3dith/data/TCGA-CDR-SupplementalTableS1.csv')
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
