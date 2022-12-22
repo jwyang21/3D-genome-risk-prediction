@@ -52,7 +52,7 @@ CGC = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/cgc/cancer-gene-cen
 CLINICAL_FNAME = pd.read_csv('/data/project/3dith/data/TCGA-CDR-SupplementalTableS1.csv')
 GENE_ANNOT = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/gencode.v19.chr_patch_hapl_scaff.annotation.gtf', sep = '\t', header = None, skiprows = [0, 1, 2, 3, 4])
 REG_ANNOT = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/homo_sapiens.GRCh37.Regulatory_Build.regulatory_features.20201218.gff', sep = '\t', header = None)
-
+RESORT_BINNED_DIFFMAT_DIR = '/data/project/3dith/pipelines/binned-difference-matrix-resort/result/'#[TCGA-COHORT]/[BARCODE].npz
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
