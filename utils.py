@@ -48,7 +48,7 @@ BINNED_DIFFMAT_BINS = '/data/project/jeewon/research/3D-ITH/pipelines/etc/binned
 P_THRESHOLD = 5e-2
 SCORE2_4_MINMAX_FILE = '/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/score2_score4_minmax.txt'
 NORMAL_STEM_DISTANCE_MINMAX = pd.read_csv('/data/project/jeewon/research/3D-ITH/pipelines/compute-score/result/normal-stem-distance-min-max.csv', index_col = 0)
-CGC = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/cgc/cancer-gene-census.csv')
+CGC = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/cgc/cancer_gene_census.csv')
 CLINICAL_FNAME = pd.read_csv('/data/project/3dith/data/TCGA-CDR-SupplementalTableS1.csv')
 GENE_ANNOT = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/gencode.v19.chr_patch_hapl_scaff.annotation.gtf', sep = '\t', header = None, skiprows = [0, 1, 2, 3, 4])
 REG_ANNOT = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/homo_sapiens.GRCh37.Regulatory_Build.regulatory_features.20201218.gff', sep = '\t', header = None)
