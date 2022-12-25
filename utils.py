@@ -203,14 +203,40 @@ def compare_tumor_normal(score_df):
     print("---\nNormal score mean and std")
     print("(mean, std) = ({}, {})".format(np.mean(normal_score), np.std(normal_score)))
     
-def get_cpg_list(chr_list): #get list of opensea CpG probes
-    total_list = np.array([])
-    for chrom in chr_list:
-        fname = '/data/project/jeewon/research/3D-ITH/binned_diff/snake/'+chrom+'_opensea_CpG.pickle'
-        cpgs = pd.read_pickle(fname).index.values
-        total_list = np.union1d(total_list, cpgs)
+def get_cpg_list(chr_list, cpg_type): #get opensea or resort CpG list
+    if cpg_type == 'opensea':
+        total_list = np.array([])
+        for chrom in chr_list: 
+            #opensea version 
+            # # opensesa cpg_list_fname: '/data/project/jeewon/research/3D-ITH/binned_diff/snake/'+chrom+'_opensea_CpG.pickle'
+            fname = '/data/project/jeewon/research/3D-ITH/binned_diff/snake/'+chrom+'_opensea_CpG.pickle'
+            cpgs = pd.read_pickle(fname).index.values
+            total_list = np.union1d(total_list, cpgs)
+    elif cpg_type == 'resort':
+        df = pd.read_csv('/data/project/3dith/data/450k_metadata.resort.sorted.bed', sep = '\t', header = None)
+        total_list = df.iloc[:,-1].values.flatten()
+    else:
+        raise Exception("Wrong cpg_type!")
         
     return total_list 
+
+
+def get_avg_beta(cohort, cpg_list, S): # get average opensea or resort CpG beta values (per sample)
+    # 현재 cohort의 전체 beta 데이터 중에서, 입력받은 cpg_list들의 beta value들만 반환.
+    beta_fname = '/data/project/3dith/data/450k_xena/'+cohort+'.HumanMethylation450.tsv' #이 파일로부터 beta value를 읽어옴. 
+    beta = pd.read_csv(beta_fname, sep = '\t', index_col = 0)
+    
+    beta_target_cpg_df = beta.loc[cpg_list].dropna() #beta 데이터: row가 cpg, column이 samplename
+    print("num_target_cpg_after_dropna: {}".format(beta_target_cpg_df.shape[0]))
+    samples_beta = beta_target_cpg_df.columns.values
+    avg_target_cpg_beta = beta_target_cpg_df.mean().values #column mean
+    
+    avg_beta_target_cpg_df = pd.DataFrame(avg_target_cpg_beta, index = samples_beta, columns = ['avg_beta'])
+    
+    #avg_beta_target_cpg_df = pd.DataFrame(zip(samples_beta, avg_target_cpg_beta), columns = ['sample', 'avg_beta'])
+    #print("avg_beta_target_cpg_df")#debug
+    #print(avg_beta_target_cpg_df)#debug #index가 s
+    return beta_target_cpg_df[S], avg_beta_target_cpg_df.loc[S] 
 
 def get_sample_score(cohort, score_type, S, stemness_type, normalize, minmax):
     # 이 코호트의 모든 샘플들의 score 불러오기 (score2, score3, score4)
