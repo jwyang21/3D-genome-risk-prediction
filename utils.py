@@ -13,6 +13,9 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from scipy.stats import ttest_ind
 
+SAMPLE_NAME_FILE = '/data/project/3dith/data/samplenames.npz'#item: {cohort}
+
+
 
 CHROMOSOMES = [f'chr{i}' for i in range(1, 23)] + ['chrX', 'chrY']
 DATA_DIR = '/data/project/jeewon/research/3D-ITH/data'
@@ -78,13 +81,14 @@ def preprocess_cpg_annot(CPG_ANNOT):
 
 def get_sample_list(cohort):
     # sample list of input TCGA cohort
-    samples = np.load(SAMPLE_NAME_FILE)[cohort+'_samples']
+    samples = np.load(SAMPLE_NAME_FILE)[cohort]
+    S = samples.tolist()
     if cohort=='PCBC':
-        return samples.tolist()
+        T = []
+        N = []
     else: #TCGA cohort
         T = []
         N = []
-        S = [] #all samples
         for s in samples:
             if int(s[13:15]) >= 1 and int(s[13:15]) <= 9: #tumor barcode: '01' ~ '09'
                 T.append(s)
@@ -92,10 +96,8 @@ def get_sample_list(cohort):
                 N.append(s)
             else:
                 pass
-        S = T + N
-        print("{}: tumor {}, normal {}, total {}".format(cohort, len(T), len(N), len(S)))
-
-        return T, N, S
+    return T, N, S
+    # usage: T, N, S = get_sample_list(args.cohort)
 
 
 # default figure setting
