@@ -205,22 +205,36 @@ def compare_tumor_normal(score_df):
     print("---\nNormal score mean and std")
     print("(mean, std) = ({}, {})".format(np.mean(normal_score), np.std(normal_score)))
     
-def get_cpg_list(chr_list, cpg_type): #get opensea or resort CpG list
+def get_cpg_list(chr_list, cpg_type):
     if cpg_type == 'opensea':
+        df = pd.read_csv('/data/project/3dith/data/450k_metadata.open_sea.sorted.bed', sep = '\t', header = None) #chrom // start // end // cpg_id
+        '''
+        # previous version
         total_list = np.array([])
-        for chrom in chr_list: 
-            #opensea version 
+        for chrom in chr_list:
+            #opensea version
             # # opensesa cpg_list_fname: '/data/project/jeewon/research/3D-ITH/binned_diff/snake/'+chrom+'_opensea_CpG.pickle'
             fname = '/data/project/jeewon/research/3D-ITH/binned_diff/snake/'+chrom+'_opensea_CpG.pickle'
             cpgs = pd.read_pickle(fname).index.values
             total_list = np.union1d(total_list, cpgs)
-    elif cpg_type == 'resort':
-        df = pd.read_csv('/data/project/3dith/data/450k_metadata.resort.sorted.bed', sep = '\t', header = None)
-        total_list = df.iloc[:,-1].values.flatten()
-    else:
+        '''
+    elif cpg_type == 'island':
+        df = pd.read_csv('/data/project/3dith/data/450k_metadata.island.sorted.bed', sep = '\t', header = None) #chrom // start // end // cpg_id
+
+    elif cpg_type == 'shelf_shore':
+        df = pd.read_csv('/data/project/3dith/data/450k_metadata.shelf_shore.sorted.bed', sep = '\t', header = None) #chrom / start / end / cpg_id
+    else: #일단 shelf, shore, shelr_shore는 보류.
         raise Exception("Wrong cpg_type!")
-        
-    return total_list 
+
+    chr_list_mask = np.array([x in chr_list for x in df.iloc[:,0].values.flatten()])
+    df_chr_list = df.iloc[chr_list_mask,:]
+
+    for x in df_chr_list.iloc[:,0].values.flatten():
+        assert x in chr_list
+
+    total_list = df_chr_list.iloc[:,-1].values.flatten()
+    return total_list
+
 
 
 def get_avg_beta(cohort, cpg_list, S): # get average opensea or resort CpG beta values (per sample)
