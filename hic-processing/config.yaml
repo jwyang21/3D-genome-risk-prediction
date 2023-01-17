@@ -1,0 +1,64 @@
+ascp_bin: '/data/home/dohoon/.aspera/connect/bin/ascp'
+ascp_key: '/data/home/dohoon/.aspera/connect/etc/asperaweb_id_dsa.openssh'
+
+manifest: 'manifest.csv'
+
+reference:
+    name: 'hg19'
+    dir: '/data/project/dohoon/reference/hg19'
+    fasta: '/data/project/dohoon/reference/hg19/hg19.fa'
+    sizes: '/data/project/dohoon/reference/hg19/hg19.fa.sizes'
+
+data_dir: 'data'
+result_dir: 'result'
+bwa_index_dir: '/data/project/dohoon/reference/hg19/bwa_index'
+
+threads:
+    parallel_fastq_dump: 6
+    trim_galore: 6
+    bwa_index: 1
+    bwa: 12
+    sambamba_sort: 8
+    sambamba_index: 8
+
+bwa_index:
+    extra: ''
+    a: 'bwtsw'
+    b: False
+    _6: False
+
+bwa_mem:
+    extra: ''
+    k: 19
+    w: 100
+    d: 100
+    r: 1.5
+    y: 20
+    c: 500
+    D: 0.50
+    W: 0
+    m: 50
+    S: True # NOTE: Set as True
+    P: True # NOTE: set as True
+    A: 1
+    B: 4
+    O: '6,6'
+    E: '1,1'
+    L: '5,5'
+    U: 17
+    x: False
+    R: '"@RG\tID:{run}\tSM:{run}\tPL:ILLUMINA"'
+    H: False
+    j: False
+    _5: True # NOTE: Set as True
+    q: False
+    K: False
+    v: 3
+    T: 30
+    h: '5,200'
+    a: False
+    C: False
+    V: False
+    Y: False
+    M: True # NOTE: Set as True
+    I: False

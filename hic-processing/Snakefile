@@ -1,0 +1,186 @@
+import pandas as pd
+from pathlib import Path
+from collections import defaultdict
+
+configfile: 'config.yaml'
+manifest = pd.read_csv(config['manifest'])
+
+ruleorder:
+    cooler_cload_pairix > cooler_merge > cooler_zoomify
+    
+
+name2runs = defaultdict(list)
+for r in manifest.to_records():
+    name2runs[r.name].append(r.run_accession)
+
+ASSEMBLY = config['reference']['name']
+CHROMS = [f'chr{i}' for i in range(1, 23)]
+
+runs = manifest.run_accession.values
+names = manifest.name.unique()
+wildcard_constraints:
+    run = 'SRR[0-9]+'
+
+# Directories.
+data_dir = Path(config['data_dir'])
+result_dir = Path(config['result_dir'])
+
+# Rule includes.
+include: 'rules/download.smk'
+include: 'rules/bwa.smk'
+include: 'rules/sambamba.smk'
+
+# Target files.
+fastq = expand(str(data_dir / '{run}.read1.fastq.gz'), run=runs)
+bam = expand(str(result_dir / '01_bwa/{run}.bam'), run=runs)
+# pairsam = expand(str(result_dir / '02_pairsam/{run}.UU_UC.marked.sorted.pairs.gz'), run=runs)
+pairs = expand(str(result_dir / '02_pairs/{run}.UU_UC.marked.sorted.pairs.gz'), run=runs)
+
+resolutions = [100000, 1000000] # 100kb, 1M
+cool = expand(str(result_dir / '03_cooler_pairix' / f'{{run}}.{ASSEMBLY}.cool'), run=runs)
+# mcool = expand(str(result_dir / '04_mcool' / f'{{run}}.{ASSEMBLY}.mcool'), run=runs)
+mcool = expand(str(result_dir / '04_mcool' / f'{{name}}.{ASSEMBLY}.mcool'), name=names)
+fanc = expand(str(result_dir / '05_fanc' / f'{{name}}.{ASSEMBLY}_1mb.ab'), name=names)
+fancplot = expand(str(result_dir / '05_fanc' / f'{{name}}.{ASSEMBLY}_1mb.{{chrom}}.ab.png'), name=names, chrom=CHROMS)
+
+ALL = []
+# ALL.append(fastq)
+# ALL.append(bam)
+# ALL.append(pairs)
+# ALL.append(mcool)
+ALL.append(fancplot)
+
+rule all:
+    input: ALL
+
+rule pairtools_parse:
+    input:
+        result_dir / '01_bwa' / '{run}.bam'
+    output:
+        result_dir / '02_pairs' / '{run}.pairs.gz'
+    params:
+        chrom_sizes = config['reference']['sizes']
+    shell:
+        'pairtools parse '
+        '--drop-seq --drop-sam '
+        '--add-columns mapq '
+        '--walks-policy mask '
+        '-c {params.chrom_sizes} -o {output} {input}'
+
+rule pairtools_sort:
+    input:
+        result_dir / '02_pairs' / '{run}.pairs.gz'
+    output:
+        result_dir / '02_pairs' / '{run}.sorted.pairs.gz'
+    threads: 8
+    shell:
+        'pairtools sort -o {output} --nproc {threads} --tmpdir . {input}'
+
+rule pairtools_markdup:
+    input:
+        result_dir / '02_pairs' / '{run}.sorted.pairs.gz'
+    output:
+        result_dir / '02_pairs' / '{run}.marked.sorted.pairs.gz'
+    shell:
+        'pairtools dedup --mark-dups --output-dups - --output-unmapped - --output {output} {input}'
+        # 'pairtools markasdup -o {output} {input}'
+
+rule pairtools_select:
+    input:
+        result_dir / '02_pairs' / '{run}.marked.sorted.pairs.gz'
+    output:
+        result_dir / '02_pairs' / '{run}.UU_UC.marked.sorted.pairs.gz'
+    shell:
+        'pairtools select \'(pair_type=="UU") or (pair_type=="UC")\' -o {output} {input}'
+
+rule cooler_cload_pairs:
+    input:
+        result_dir / '02_pairs' / '{run}.UU_UC.marked.sorted.pairs.gz'
+    output:
+        result_dir / '03_cooler' / f'{{run}}.{ASSEMBLY}.{{resolution}}bp.cool'
+    params:
+        assembly = ASSEMBLY,
+        sizes = config['reference']['sizes'],
+    shell:
+        'cooler cload pairs ' 
+        '-c1 2 -p1 3 -c2 4 -p2 5 '
+        '--assembly {params.assembly} '
+        '--temp-dir . '
+        '{params.sizes}:{wildcards.resolution} '
+        '{input} '
+        '{output}'
+
+rule pairix:
+    input:
+        result_dir / '02_pairs' / '{run}.UU_UC.marked.sorted.pairs.gz'
+    output:
+        result_dir / '02_pairs' / '{run}.UU_UC.marked.sorted.pairs.gz.px2'
+    shell:
+        'pairix {input}'
+        
+rule cooler_cload_pairix:
+    input:
+        pairs = result_dir / '02_pairs' / '{run}.UU_UC.marked.sorted.pairs.gz',
+        pairix = result_dir / '02_pairs' / '{run}.UU_UC.marked.sorted.pairs.gz.px2',
+    output:
+        result_dir / '03_cooler_pairix' / f'{{run}}.{ASSEMBLY}.cool'
+    params:
+        assembly = ASSEMBLY,
+        sizes = config['reference']['sizes'],
+    threads: 8
+    shell:
+        'cooler cload pairix ' 
+        '--assembly {params.assembly} '
+        '--nproc {threads} '
+        '{params.sizes}:1000 '
+        '--max-split 2 '
+        '{input.pairs} '
+        '{output}'
+
+rule cooler_zoomify: # Produces multires.cool
+    input:
+        result_dir / '03_cooler_pairix' / f'{{name}}.{ASSEMBLY}.cool'
+    output:
+        result_dir / '04_mcool' / f'{{name}}.{ASSEMBLY}.mcool'
+    # params:
+        # blacklist = 'hg19-blacklist.v2.bed'
+    threads: 8
+    shell:
+        'cooler zoomify '
+        # '--balance --balance-args "--convergence-policy store_final" '
+        # '--balance --balance-args "--blacklist {params.blacklist}" '
+        '-n {threads} '
+        '-o {output} '
+        '-c 10000000 ' # Number of pixels allocated to each process.
+        # '--resolutions 5000,10000,25000,50000,100000,250000,500000,1000000,2500000 '
+        '--resolutions 100000,1000000 '
+        '{input}'
+
+rule fanc_compartments:
+    input:
+        result_dir / '04_mcool' / f'{{name}}.{ASSEMBLY}.mcool'
+    output:
+        ab = result_dir / '05_fanc' / f'{{name}}.{ASSEMBLY}_{{resolution}}.ab',
+        mat = result_dir / '05_fanc' / f'{{name}}.{ASSEMBLY}_{{resolution}}.txt',
+        eigenvector = result_dir / '05_fanc' / f'{{name}}.{ASSEMBLY}_{{resolution}}.ev.txt',
+    shell:
+        'fanc compartments -v {output.eigenvector} -m {output.mat} '
+        '{input}@{wildcards.resolution} {output.ab}'
+
+rule fancplot:
+    input:
+        ab = result_dir / '05_fanc' / f'{{name}}.{ASSEMBLY}_{{resolution}}.ab',
+    output:
+        result_dir / '05_fanc' / f'{{name}}.{ASSEMBLY}_{{resolution}}.{{chrom}}.ab.png'
+    shell:
+        'fancplot -o {output} {wildcards.chrom} -p square '
+        '{input} '
+        '-vmin 0.75 -vmax 0.75 -c RdBu_r'
+
+rule cooler_merge:
+    input:
+        lambda wc: expand(str(result_dir /  f'03_cooler_pairix/{{run}}.{ASSEMBLY}.cool'), run=name2runs[wc.name])
+    output:
+        result_dir / '03_cooler_pairix' / f'{{name}}.{ASSEMBLY}.cool'
+    shell:
+        'cooler merge {output} {input}'
