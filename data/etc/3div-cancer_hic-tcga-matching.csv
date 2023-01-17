@@ -1,0 +1,9 @@
+﻿cohort,TCGA discription,GEO ids,cancer cell line,3div description,3div data version,tissue
+TCGA-BRCA,Breast cancer,GSM3258551,HCC1954 (Breast cancer cell line),Breast_Cancer,hg38,breast
+TCGA-COAD,Colon cancer,GSM3399745,SW480_ (Colon cancer cell line),Colon_Adenocarcinoma,hg38,colon
+TCGA-ESCA,Esophageal cancer,GSM3258552,OE33 (Esophegeal adenocarcinoma cell line),Esophageal_Adenocarcinoma,hg38,esophagus
+TCGA-KIRC,kidney renal clear cell carcinoma,"GSM2825105, GSM2825106",G-401 (kidney cancer cell line),Kidney_Renal_Clear_Cell_Carcinoma,hg38,kidney
+TCGA-LIHC,Liver cancer,"GSM2825569, GSM2825570",HepG2 (hepatocellular carcinoma cell line),Liver_Hepatocellular_carcinoma,hg38,liver
+TCGA-LUSC,Lung squamous cell carcinoma,"GSM2827554, GSM2827555",NCI-H460 (lung cancer cell line),Lung_Squamous_Cell_Carcinoma,hg38,lung
+TCGA-PAAD,Pancreatic cancer,"GSM2827313, GSM2827314",Panc1 (pancreatic carcinoma cell line),Pancreatic_Cancer,hg38,pancreas
+TCGA-PRAD,Prostate cancer,"GSM3358191, GSM3358192",22Rv1 (prostate cancer cell line),Prostate_Adenocarcinoma,hg38,prostate

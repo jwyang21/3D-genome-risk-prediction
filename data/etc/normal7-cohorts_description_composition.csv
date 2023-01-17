@@ -1,0 +1,16 @@
+ Cohort ,Description,n_tumor,n_normal,n_total
+TCGA-BLCA, Bladder cancer ,413,21,434
+TCGA-BRCA, Breast cancer ,790,98,888
+TCGA-CHOL, Bile duct cancer ,36,9,45
+TCGA-COAD, Colon cancer ,299,38,337
+TCGA-ESCA, Esophageal cancer ,186,16,202
+TCGA-HNSC, Head and neck cancer ,530,50,580
+TCGA-KIRC, Kidney clear cell carcinoma ,320,160,480
+TCGA-KIRP, Kidney papillary cell carcinoma ,276,45,321
+TCGA-LIHC, Liver cancer ,379,50,429
+TCGA-LUAD, Lung adenocarcinoma ,460,32,492
+TCGA-LUSC, Lung squamous cell carcinoma ,372,43,415
+TCGA-PAAD, Pancreatic cancer ,185,10,195
+TCGA-PRAD, Prostate cancer ,499,50,549
+TCGA-THCA, Thyroid cancer ,515,56,571
+TCGA-UCEC, Endometrioid cancer ,432,46,478

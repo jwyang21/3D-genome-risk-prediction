@@ -1,0 +1,9 @@
+﻿cohort,TCGA description,GEO ids,3div description,tissue
+TCGA-PAAD,Pancreatic cancer,GSM2322548,Pancreas,pancreas
+TCGA-PAAD,Pancreatic cancer,GSM2322550,Pancreas,pancreas
+TCGA-PAAD,Pancreatic cancer,GSM2322547,Pancreas,pancreas
+TCGA-PAAD,Pancreatic cancer,GSM2322549,Pancreas,pancreas
+TCGA-LUAD,Lung adenocarcinoma,GSM2322544,Lung,lung
+TCGA-LUAD,Lung adenocarcinoma,GSM2322545,Lung,lung
+TCGA-LUSC,Lung squamous cell carcinoma,GSM2322544,Lung,lung
+TCGA-LUSC,Lung squamous cell carcinoma,GSM2322545,Lung,lung

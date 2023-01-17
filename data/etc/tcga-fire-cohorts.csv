@@ -1,0 +1,8 @@
+﻿TCGA,FIRE,TCGA_disease,FIRE_tissue
+TCGA-ACC,AD,Adrenocortical carcinoma,Adrenal_Gland
+TCGA-BLCA,BL,Bladder urothelial carcinoma,Bladder
+TCGA-LIHC,LI,Liver hepatocellular carcinoma,Liver
+TCGA-LUAD,LG,Lung adenocarcinoma,Lung
+TCGA-LUSC,LG,Lung squamous cell carcinoma,Lung
+TCGA-OV,OV,Ovarian serous cystadenocarcinoma,Ovary
+TCGA-PAAD,PA,Pancreatic adenocarcinoma,Pancreas
