@@ -1,0 +1,16 @@
+﻿cohort,description
+TCGA-BLCA,Bladder cancer
+TCGA-LUAD,Lung adenocarcinoma
+TCGA-PRAD,Prostate cancer
+TCGA-KIRC,Kidney clear cell carcinoma
+TCGA-ESCA,Esophageal cancer
+TCGA-UCEC,Endometrioid cancer
+TCGA-KIRP,Kidney papillary cell carcinoma
+TCGA-THCA,Thyroid cancer
+TCGA-HNSC,Head and neck cancer
+TCGA-LIHC,Liver cancer
+TCGA-LUSC,Lung squamous cell carcinoma
+TCGA-CHOL,Bile duct cancer
+TCGA-PAAD,Pancreatic cancer
+TCGA-BRCA,Breast cancer
+TCGA-COAD,Colon cancer
