@@ -5,6 +5,9 @@
 ### 1-2. quantitative overview
 ![readme_stem-closeness-computation-explanation](https://user-images.githubusercontent.com/86412887/212883809-ce4f3af6-9d01-441c-b10c-219db8f9314c.png)
 ## 2. Installation
+```shell
+conda env create --file environment.yaml
+```
 
 ## 3. Process
 
