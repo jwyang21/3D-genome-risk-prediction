@@ -1,0 +1,20 @@
+import pandas as pd
+
+manifest = pd.read_csv('manifest.csv')
+cohorts = manifest.cohort.values
+
+ALL = []
+ALL.append(expand('{cohort}.HumanMethylation450.tsv', cohort=cohorts))
+
+rule all:
+    input: ALL
+
+rule download:
+    output:
+        '{cohort}.HumanMethylation450.tsv'
+    params:
+        url = lambda wc: f"https://tcga-xena-hub.s3.us-east-1.amazonaws.com/download/{wc.cohort.replace('-', '.')}.sampleMap%2FHumanMethylation450.gz"
+    resources:
+        network = 1
+    shell:
+        'wget {params.url} -O- | gunzip -c > {output}'
