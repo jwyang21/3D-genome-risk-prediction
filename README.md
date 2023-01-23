@@ -30,6 +30,18 @@ cd ../
 ```shell
 conda activate stem-closeness
 ```
+#### 3-2-1. Construct metadata and bedgraph file ofopen sea CpG probes in 450K DNA methylation data
+- Download manifest file for Infinium HumanMethylation450 v1.2 BeadChip, provided by Illumina ([1]) 
+```shell
+cd data
+wget https://webdata.illumina.com/downloads/productfiles/humanmethylation450/humanmethylation450_15017482_v1-2.csv
+cd ../
+
+python3 utils/make-450k-probe-metadata.py --cpg_type opensea
+python3 utils/make-450k-probe-bedgraph.py --cpg_type opensea
+```
+
+
 ### 3-2-1. Make binned difference matrices (BDMs)    
 #### 3-2-1-1. Make BDMs for TCGA samples, using open sea CpG probes
 ```shell
@@ -67,3 +79,6 @@ bash opensea-pipeline/1_compute-score-opensea/scripts/2_compute-reference.sh
 #### 3-5-1. Compute score
 #### 3-5-2. Survival analyses
 #### 3-5-3. DMR analyses
+
+## Reference
+[1] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.     
