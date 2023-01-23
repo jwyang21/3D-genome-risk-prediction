@@ -200,6 +200,7 @@ cd ../
 ```shell
 cd data/roadmap_epigenomics
 bash download.sh
+cd ../../
 ```
 ```shell
 cd opensea-pipeline/3_dmr-opensea/scripts
@@ -243,6 +244,7 @@ bash 4_collate_DMR_features.sh > ../log/4_collate_DMR_features.log
 bash 5_make-cohort-threshold-feature-list-threshold-mean_std.sh > ../log/5_make-cohort-threshold-feature-list-threshold-mean_std.log
 bash 6_write_np2txt.sh > ../log/6_write_np2txt.log
 bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.log
+cd ../../../
 ```
 
 ## Reference
