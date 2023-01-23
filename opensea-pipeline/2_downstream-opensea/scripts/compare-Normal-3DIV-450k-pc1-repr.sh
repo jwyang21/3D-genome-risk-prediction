@@ -7,7 +7,7 @@ m=bdm
 for cohort in TCGA-PAAD TCGA-LUAD TCGA-LUSC
 do
 
-	echo "python3 8-4_compare-Normal-3DIV-450k-pc1-repr.py --cpg_type $cpg_type --matching_df_fname $matching_df_fname --hic_corrmat_dir $hic_corrmat_dir --hg19_len_fname $hg19_len_fname --binsize $binsize --cohort $cohort --matrix_type $m"
-	python3 8-4_compare-Normal-3DIV-450k-pc1-repr.py --cpg_type $cpg_type --matching_df_fname $matching_df_fname --hic_corrmat_dir $hic_corrmat_dir --hg19_len_fname $hg19_len_fname --binsize $binsize --cohort $cohort --matrix_type $m
+	echo "python3 compare-Normal-3DIV-450k-pc1-repr.py --cpg_type $cpg_type --matching_df_fname $matching_df_fname --hic_corrmat_dir $hic_corrmat_dir --hg19_len_fname $hg19_len_fname --binsize $binsize --cohort $cohort --matrix_type $m"
+	python3 compare-Normal-3DIV-450k-pc1-repr.py --cpg_type $cpg_type --matching_df_fname $matching_df_fname --hic_corrmat_dir $hic_corrmat_dir --hg19_len_fname $hg19_len_fname --binsize $binsize --cohort $cohort --matrix_type $m
 done
 
