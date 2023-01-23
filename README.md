@@ -25,7 +25,7 @@ mamba env create --file stem-closeness.yaml
   - When processing additional Hi-C data, name, library\_layout, run\n_accession information of that data should be written in the aforementioned manifest.csv file instead.
   - Each name in this manifest.csv file should be different. No two different samples can have identical name in this file.
   - To use the provided Hi-C processing code, library\_layout should be `paired'. 
-    - Library\_layout information can be checked in SRA page [SRA](https://www.ncbi.nlm.nih.gov/sra)
+    - Library\_layout information can be checked in [SRA](https://www.ncbi.nlm.nih.gov/sra)
 ```shell
 cd hic-processing
 snakemake --cores 100 --resources network=1 --restart-time 3
