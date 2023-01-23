@@ -10,16 +10,19 @@ There are two environments needed: one for processing Hi-C data, and the other f
 ```shell
 conda install mamba -n base -c conda-forge
 mamba env create --file hic-processing/environment.yaml
-conda activate hic-processing
-pip install fanc
 ```
 ### 2-2. Installing conda environment for running stem closeness-related analyses
 ```shell
+conda install mamba -n base -c conda-forge
 mamba env create --file stem-closeness.yaml
 ```
 ## 3. Process
 
 ### 3-1. Process Hi-C data 
+```shell
+cd hic-processing
+snakemake --cores 100 --resources network=1 --restart-time 3
+```
 
 ### 3-2. Conduct stem closeness-related analyses
 ```shell
