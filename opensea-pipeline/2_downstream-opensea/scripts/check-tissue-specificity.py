@@ -85,7 +85,9 @@ random.seed(42)
 # In[8]:
 
 
-save_dir = f'/data/project/3dith/pipelines/{cpg_type}-pipeline/2_downstream-{cpg_type}/result/tissue-specificity'
+save_dir = f'/data/project/3dith/pipelines/{cpg_type}-pipeline/2_downstream-{cpg_type}/result/tissue-specificity-bdm'
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
 
 
 # ## functions
@@ -129,7 +131,7 @@ def standardize(v):
 # In[11]:
 
 
-repr_dir = f'/data/project/3dith/pipelines/{cpg_type}-pipeline/2_downstream-{cpg_type}/result/repr_vectors'
+repr_dir = f'/data/project/3dith/pipelines/{cpg_type}-pipeline/2_downstream-{cpg_type}/result/repr_vectors-bdm'
 
 
 # In[12]:
@@ -590,7 +592,7 @@ for chrom in CHR_LIST:
 # In[11]:
 
 
-tissue_specificity_dir = f'/data/project/3dith/pipelines/{cpg_type}-pipeline/2_downstream-{cpg_type}/result/tissue-specificity'
+tissue_specificity_dir = f'/data/project/3dith/pipelines/{cpg_type}-pipeline/2_downstream-{cpg_type}/result/tissue-specificity-bdm'
 
 
 # In[12]:
