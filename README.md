@@ -146,24 +146,29 @@ bash parse_cox_results_v5.sh
 - Plot Cox regression results (hazard ratios)
 ```shell
 python3 plot-HR.py
+cd ../../../
 ```
+##### 3-2-3-3. DMR analysis
+```shell
+cd opensea-pipeline/3_dmr-opensea/scripts
+bash 0_compute_binned_avg_opensea_beta.sh > ../log/0_compute_binned_avg_opensea_beta.log
+bash 1_compute-binned-opensea-beta-TN-diff-binsize-1e6.sh > ../log/1_compute-binned-opensea-beta-TN-diff-binsize-1e6.log
+bash 2_find_DMR.sh > ../log/2_find_DMR.log
+bash 3_find_DMR_features_mean_std_epigenome.sh > ../log/3_find_DMR_features_mean_std_epigenome.log
+bash 3_find_DMR_features_mean_std_gene_reg.sh > ../log/3_find_DMR_features_mean_std_gene_reg.log
+bash 4_collate_DMR_features.sh > ../log/4_collate_DMR_features.log
+bash 5_make-cohort-threshold-feature-list-threshold-mean_std.sh > ../log/5_make-cohort-threshold-feature-list-threshold-mean_std.log
+bash 6_write_np2txt.sh > ../log/6_write_np2txt.log
+bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.log
+bash 8_compute-chromatin-state-proportion.sh > ../log/8_compute-chromatin-state-proportion.log
+cd ../../../
+```
+#### 3-2-4. Run island pipeline
+##### 3-2-4-1. DMR analysis
 
+#### 3-2-5. Run shelf\_shore pipeline
+##### 3-2-5-1. DMR analysis
 
-
-
-#### 3-2-2-1. Compute score
-#### 3-2-2-2. Survival analyses
-#### 3-2-2-3. DMR analyses
-
-### 3-4. Run island pipeline
-#### 3-4-1. Compute score
-#### 3-4-2. Survival analyses
-#### 3-4-3. DMR analyses
-
-### 3-5. Run shelf\_shore pipeline
-#### 3-5-1. Compute score
-#### 3-5-2. Survival analyses
-#### 3-5-3. DMR analyses
 
 ## Reference
 [1] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.     
