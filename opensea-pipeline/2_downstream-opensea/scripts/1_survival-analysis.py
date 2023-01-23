@@ -122,47 +122,6 @@ def save_pickle(data, directory, fname):
     print("fname: {}".format(os.path.join(directory, fname)))
     data.to_pickle(os.path.join(directory, fname))
 
-#이건 빼도 됨
-def boxplots_clinical_variable(df, directory, figname, cohort): #merged_tumor, SAVEDIR, 'clinical_variables.png', respectively
-    
-    clinical_variables = ['treatment_outcome_first_course', 'new_tumor_event_site', 'new_tumor_event_type', 'tumor_status',
-                          'vital_status', 'histological_grade', 'ajcc_pathologic_tumor_stage', 'race', 'gender']
-    
-    fig = plt.figure(figsize = (21, 21))
-    
-    subtype_dict = {}
-    for i, c in enumerate(clinical_variables):
-        ax_ = fig.add_subplot(3, 3, i+1)
-        categories = df[c].unique() # 이 clinical variable의 subtype들
-        if '[Not Evaluated]' in categories:
-            categories = np.delete(categories, np.where(categories=='[Not Evaluated]')[0][0])
-        if '[Unknown]' in categories:
-            categories = np.delete(categories, np.where(categories=='[Unknown]')[0][0])
-        if '[Not Available]' in categories:
-            categories = np.delete(categories, np.where(categories=='[Not Available]')[0][0])
-        if '[Not Applicable]' in categories:
-            categories = np.delete(categories, np.where(categories=='[Not Applicable]')[0][0])
-        if 'nan' in [str(x) for x in categories]:
-            categories = np.delete(categories, [str(x) for x in categories].index('nan'))
-        
-        if len(categories)>0:
-            subtype_dict[c] = categories
-        
-        # 현재 clinical variable의 all-subtype-pairwise independent t-test 진행. 
-        all_pairs = [(a, b) for idx, a in enumerate(categories) for b in categories[idx + 1:]]
-        
-        if len(categories) > 1 and len(categories)<=4: #subgroup 개수가 1 초과 4 이하앤 clinical variable들만 plot
-            ax = sns.boxplot(data = df, x = c, y = df.columns[-2], order = categories, ax = ax_)
-            ax, test_results = add_stat_annotation(ax, data = df, x = c, y = df.columns[-2], order = categories, 
-                                                   box_pairs = all_pairs, test = 't-test_ind', text_format = 'star', loc = 'outside', verbose = 2)
-            sns.despine()
-    fig.suptitle('Boxplots from each clinical variable ('+cohort+')', fontsize = 15)
-    fig.tight_layout()
-    #fig.show()
-    print("figure file: {}".format(os.path.join(directory, figname)))
-    plt.savefig(os.path.join(directory, figname))
-    return subtype_dict
-
 
 def survival_analysis(df, target, q, directory, fig_width, figname, cohort):
     # function 'survival_analysis': plot survival analysis results and save resulting figure.
@@ -284,8 +243,6 @@ if __name__=='__main__':
     merged_tumor.to_csv(os.path.join(cohort_dir, merged_tumor_fname))
     print("merged_tumor fname: ", os.path.join(cohort_dir, merged_tumor_fname))
 
-    subtype_dict = boxplots_clinical_variable(merged_tumor, cohort_dir, 'clinical_variables_'+result_filenme_default+'.png', args.cohort) #Tumor samples only
-
     valid_t, valid_t_pvals, sig_t, sig_t_pvals = survival_analysis(merged_tumor, survival_target, 2, cohort_dir, 3, 
             'survival_analysis_'+result_filenme_default+'.png', args.cohort) 
     #Tumor samples only #생존분석 변수 column 전체가 NaN인 경우도 있음. 
@@ -293,11 +250,3 @@ if __name__=='__main__':
     print("survival analysis: {}".format(os.path.join(cohort_dir, 'survival_analysis_pvalues_'+result_filenme_default+'.npz')))
     np.savez(os.path.join(cohort_dir, 'survival_analysis_pvalues_'+result_filenme_default), 
             valid_target = np.array(valid_t), valid_target_pvals = np.array(valid_t_pvals), significant_target = np.array(sig_t), significant_target_pvals = np.array(sig_t_pvals))
-
-    print("subtype dictionary: {}".format(os.path.join(cohort_dir, 'subtype_dictionary_'+result_filenme_default+'.pickle')))
-    with open(os.path.join(cohort_dir, 'subtype_dictionary'+result_filenme_default+'.pickle'), 'wb') as f:
-        pickle.dump(subtype_dict, f) 
-
-
-
-
