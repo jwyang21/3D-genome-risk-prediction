@@ -19,10 +19,19 @@ mamba env create --file stem-closeness.yaml
 ## 3. Process
 
 ### 3-1. Process Hi-C data 
+#### 3-1-1. Processing Hi-C data from 3DIV database
+- For this case, we need to process raw Hi-C data ([1]) to get PC1 vectors since PC1 values are not provided directly.
 ```shell
 cd hic-processing
 snakemake --cores 100 --resources network=1 --restart-time 3
 python ab2corrmat.py
+cd ../
+```
+#### 3-2-2. Processing PC1 values computed from Hi-C data of normal tissues ([2])
+- For this case, PC1 values derived from Hi-C data of normal tissues are provided by the supplementary information. 
+```shell
+cd data
+python3 download_FIRE_PC1.py 
 cd ../
 ```
 
@@ -211,6 +220,8 @@ bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.l
 
 
 ## Reference
-[1] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.         
-[2] Hutter, Carolyn, and Jean Claude Zenklusen. "The cancer genome atlas: creating lasting value beyond its data." Cell 173.2 (2018): 283-285.             
-[3] Salomonis, Nathan, et al. "Integrated genomic analysis of diverse induced pluripotent stem cells from the progenitor cell biology consortium." Stem cell reports 7.1 (2016): 110-125.              
+[1] Kim, Kyukwang, et al. "3DIV update for 2021: a comprehensive resource of 3D genome and 3D cancer genome." Nucleic Acids Research 49.D1 (2021): D38-D46.
+[2] Schmitt, Anthony D., et al. "A compendium of chromatin contact maps reveals spatially active regions in the human genome." Cell reports 17.8 (2016): 2042-2059.
+[3] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.         
+[4] Hutter, Carolyn, and Jean Claude Zenklusen. "The cancer genome atlas: creating lasting value beyond its data." Cell 173.2 (2018): 283-285.             
+[5] Salomonis, Nathan, et al. "Integrated genomic analysis of diverse induced pluripotent stem cells from the progenitor cell biology consortium." Stem cell reports 7.1 (2016): 110-125.              
