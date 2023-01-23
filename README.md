@@ -41,31 +41,68 @@ python3 utils/make-450k-probe-metadata.py --cpg_type opensea
 python3 utils/make-450k-probe-bedgraph.py --cpg_type opensea
 ```
 
-### 3-2-1. Make binned difference matrices (BDMs)    
-#### 3-2-1-1. Make BDMs for TCGA samples, using open sea CpG probes
+#### 3-2-2. Make binned difference matrices (BDMs)    
+##### 3-2-2-1. Make BDMs for TCGA samples, using open sea CpG probes
 ```shell
 cd binned-difference-matrix-v2-opensea
 snakemake -j 10
 cd ../
 ```
-#### 3-2-1-2. Make BDMs for PCBC stem cell samples, using open sea CpG probes
+##### 3-2-2-2. Make BDMs for PCBC stem cell samples, using open sea CpG probes
 ```shell
 cd binned-difference-matrix-pcbc
 snakemake -j 10
 cd ../
 ```
-#### 3-2-1-3. Make list of genomic bins used for constructing BDM.
+##### 3-2-2-3. Make list of genomic bins used for constructing BDM.
 ```shell
 cd utils/scripts
 bash 1_find-bdm-bins.sh
 cd ../../
 ```
 
-### 3-2-2. Run opensea pipeline
+#### 3-2-3. Run opensea pipeline
+##### 3-2-3-1. Compute stem closeness
 ```shell
-bash opensea-pipeline/1_compute-score-opensea/scripts/1_all-samples-pc1.sh
-bash opensea-pipeline/1_compute-score-opensea/scripts/2_compute-reference.sh
+cd opensea-pipeline/1_compute-score-opensea/scripts
+bash 1_all-samples-pc1.sh > ../log/1_all-samples-pc1.log
+bash 2_compute-reference.sh > ../log/2_compute-reference.log
+bash 3_compute-distance.sh > ../log/3_compute-distance.log
+bash 4_compute-min-max-distance.sh > ../log/4_compute-min-max-distance.log
+bash 5_compute-sc-cosine_and_euclidean-minmax.sh > ../log/5_compute-sc-cosine_and_euclidean-minmax.log
+bash 5_compute-sc-euclidean-normalized.sh > ../log/5_compute-sc-euclidean-normalized.log
+bash 5_compute-sc-euclidean-raw.sh > ../log/5_compute-sc-euclidean-raw.log
+cd ../../../
 ```
+##### 3-2-3-2. Downstream analyses
+```shell
+cd opensea-pipeline/1_compute-score-opensea/scripts
+```
+- Conduct log-rank test.
+```shell
+cd opensea-pipeline/2_downstream-opensea/scripts/
+bash 1_km-sc-cosine_and_euclidean-minmax.sh > ../log/1_km-sc-cosine_and_euclidean-minmax.log
+bash 1_km-sc-euclidean-normalized.sh > ../log/1_km-sc-euclidean-normalized.log
+bash 1_km-sc-euclidean-raw.sh > ../log/1_km-sc-euclidean-raw.log
+```
+- Figure out correlation between stem closeness and average open sea DNA methylation level.
+```shell
+bash 2_pcc-avg_beta-stem_closeness.sh > ../log/2_pcc-avg_beta-stem_closeness-ALL.log
+bash 3_parse-avg_meth-score-corr-log.sh
+- Write commands to run Cox regression
+```
+```python
+python3 5_write-cox-commands.py --cpg_type opensea --cox_version 5 --command_fname 6_cox-commands --score_fname /data/project/3dith/data/cohort-1-best-score-km.csv
+```
+- Run Cox regression
+```shell
+bash 6_cox_commands_v5.sh > ../log/6_cox_commands_v5.log
+```
+- Parse Cox regression results
+```shell
+bash 7_parse_cox_results_v5.sh
+```
+
 
 #### 3-2-2-1. Compute score
 #### 3-2-2-2. Survival analyses
