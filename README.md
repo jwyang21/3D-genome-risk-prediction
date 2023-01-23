@@ -27,6 +27,7 @@ mamba env create --file stem-closeness.yaml
   - To use the provided Hi-C processing code, library\_layout should be 'paired'. 
     - Library\_layout information can be checked in [SRA](https://www.ncbi.nlm.nih.gov/sra)
 ```shell
+conda activate hic-processing
 cd hic-processing
 snakemake --cores 100 --resources network=1 --restart-time 3
 python ab2corrmat.py
