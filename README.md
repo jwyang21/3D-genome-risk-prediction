@@ -19,8 +19,8 @@ mamba env create --file stem-closeness.yaml
 ## 3. Process
 
 ### 3-1. Process Hi-C data 
-#### 3-1-1. Processing Hi-C data from 3DIV database
-- For this case, we need to process raw Hi-C data ([1]) to get PC1 vectors since PC1 values are not provided directly.
+#### 3-1-1. Processing Hi-C data from 3DIV database ([1])
+- For this case, we need to process raw Hi-C data to get PC1 vectors, since PC1 values are not provided directly.
 ```shell
 cd hic-processing
 snakemake --cores 100 --resources network=1 --restart-time 3
@@ -41,7 +41,7 @@ conda activate stem-closeness
 ```
 #### 3-2-1. Preprocessing data
 - Construct metadata and bedgraph file of open sea CpG probes in 450K DNA methylation data
-  - Download manifest file for Infinium HumanMethylation450 v1.2 BeadChip, provided by Illumina ([1]) 
+  - Download manifest file for Infinium HumanMethylation450 v1.2 BeadChip, provided by Illumina ([3]) 
 ```shell
 cd data
 wget https://webdata.illumina.com/downloads/productfiles/humanmethylation450/humanmethylation450_15017482_v1-2.csv
@@ -61,13 +61,13 @@ python3 0_get_sample_name_list.py
 cd ../../
 ```
 #### 3-2-2. Make binned difference matrices (BDMs)    
-##### 3-2-2-1. Make BDMs for TCGA samples ([2]), using open sea CpG probes
+##### 3-2-2-1. Make BDMs for TCGA samples ([4]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-v2-opensea
 snakemake -j 10
 cd ../
 ```
-##### 3-2-2-2. Make BDMs for PCBC stem cell samples ([3]), using open sea CpG probes
+##### 3-2-2-2. Make BDMs for PCBC stem cell samples ([5]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-pcbc
 snakemake -j 10
