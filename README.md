@@ -126,10 +126,9 @@ cd ../../
 - Download TCGA clinical data.
 ```shell
 cd data
-wget https://api.gdc.cancer.gov/data/1b5f413e-a8d1-4d10-92eb-7c4ae739ed81
+python3 download_TCGA-CDR.py
 cd ../
 ```
-
 - Check whether DNA methylation-derived PC1s can reproduce those of HiC-PC1s
 ```shell
 cd opensea-pipeline/2_downstream-opensea/scripts
