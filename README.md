@@ -74,34 +74,81 @@ bash 5_compute-sc-euclidean-normalized.sh > ../log/5_compute-sc-euclidean-normal
 bash 5_compute-sc-euclidean-raw.sh > ../log/5_compute-sc-euclidean-raw.log
 cd ../../../
 ```
-##### 3-2-3-2. Downstream analyses
+
+##### 3-2-3-2. Downstream analyses 
+- Make representative PC1 vectors of tumor, normal, and stem cells, respectively.
 ```shell
-cd opensea-pipeline/1_compute-score-opensea/scripts
+cd utils/scripts
+python3 2_make-TCGA-repr-bdm.py
+python3 3_make-PAAD-repr-vector-bdm.py
+python3 4_make-SC-repr-bdm.py
+python3 5_bdm-iebdm-pc1-pcc.py
+cd ../../
 ```
-- Conduct log-rank test.
+- Download TCGA clinical data.
 ```shell
-cd opensea-pipeline/2_downstream-opensea/scripts/
-bash 1_km-sc-cosine_and_euclidean-minmax.sh > ../log/1_km-sc-cosine_and_euclidean-minmax.log
-bash 1_km-sc-euclidean-normalized.sh > ../log/1_km-sc-euclidean-normalized.log
-bash 1_km-sc-euclidean-raw.sh > ../log/1_km-sc-euclidean-raw.log
+cd data
+wget https://api.gdc.cancer.gov/data/1b5f413e-a8d1-4d10-92eb-7c4ae739ed81
+cd ../
 ```
-- Figure out correlation between stem closeness and average open sea DNA methylation level.
+- Check whether DNA methylation-derived PC1s can reproduce those of HiC-PC1s
 ```shell
-bash 2_pcc-avg_beta-stem_closeness.sh > ../log/2_pcc-avg_beta-stem_closeness-ALL.log
-bash 3_parse-avg_meth-score-corr-log.sh
+cd opensea-pipeline/2_downstream-opensea/scripts
+bash compare-Tumor-hic-450k-pc1-repr.sh
+bash compare-Tumor-hic-450k-pc1-individual.sh
+bash compare-Stem-hic-450k-pc1-repr.sh
+bash compare-Stem-hic-450k-pc1-individual.sh
+bash compare-Normal-FIRE-hic-450k-pc1-repr.sh
+bash compare-Normal-FIRE-hic-450k-pc1-individual.sh
+bash compare-Normal-3DIV-450k-pc1-repr.sh
+bash compare-Normal-3DIV-450k-pc1-individual.sh
+```
+- Check whether binned PC1s are tissue type-specific
+```shell
+python3 check-tissue-specificity.py
+```
+- Find out correlation between stem closeness and avg beta, the average DNA methylation level of open sea CpG probes.
+```shell
+bash pcc-avg_beta-stem_closeness.sh > ../log/pcc-avg_beta-stem_closeness-ALL.log
+bash parse-avg_meth-score-corr-log.sh
+cd ../../../
+```
+- Assign score group and beta group
+```shell
+cd utils/scripts
+python3 6_assign-score_group.py
+python3 7_assign-beta_group.py
+cd ../../
+```
+- Conduct log-rank test (1): use score group as predictor
+```shell
+cd opensea-pipeline/2_downstream-opensea/scripts
+bash sc-cosine_and_euclidean-minmax.sh > ../log/sc-cosine_and_euclidean-minmax.log
+bash sc-euclidean-normalized.sh > ../log/sc-euclidean-normalized.log
+bash sc-euclidean-raw.sh > ../log/sc-euclidean-raw.log
+```
+- Conduct log-rank test (2): use beta group as predictor
+```shell
+bash survival-analysis-avg_beta.sh > ../log/survival-analysis-avg_beta.log
+```
 - Write commands to run Cox regression
-```
-```python
-python3 5_write-cox-commands.py --cpg_type opensea --cox_version 5 --command_fname 6_cox-commands --score_fname /data/project/3dith/data/cohort-1-best-score-km.csv
+```shell
+python3 write-cox-commands.py --cpg_type opensea --cox_version 5 --command_fname cox-commands --score_fname /data/project/3dith/data/cohort-1-best-score-km.csv
 ```
 - Run Cox regression
 ```shell
-bash 6_cox_commands_v5.sh > ../log/6_cox_commands_v5.log
+bash cox_commands_v5.sh > ../log/cox_commands_v5.log
 ```
 - Parse Cox regression results
 ```shell
-bash 7_parse_cox_results_v5.sh
+bash parse_cox_results_v5.sh
 ```
+- Plot Cox regression results (hazard ratios)
+```shell
+python3 plot-HR.py
+```
+
+
 
 
 #### 3-2-2-1. Compute score
