@@ -213,12 +213,22 @@ def survival_analysis(df, target, q, directory, fig_width, figname, cohort):
                 d[d.group==0][f'{t}'].values,
                 d[d.group==q-1][f'{t}'].values
             )
+            
+            num_two_thousands = int((d[f'{t}.time'].dropna().values.max() // 2000) + 1)
+            print('num_thousands: ', num_two_thousands)
+            xticks_ = [i * 2000 for i in range(num_two_thousands)]
+            ax.set_xticks(xticks_)
+            
+            
             ax.legend(frameon = False)
             valid_t_pvalue.append(res.p_value)
             if res.p_value < P_THRESHOLD:
                 sig_t.append(t)
                 sig_t_pvalue.append(res.p_value)
-            ax.set_title(f'{t}, p = {res.p_value:.2g}', fontsize = 15, pad = 5) #pad: The offset of the title from the top of the axes, in points. Default is None to use rcParams['axes.titlepad'].
+            ax.set_title(f'{t}, p = {res.p_value:.2g}', fontsize = 13, pad = 5) #pad: The offset of the title from the top of the axes, in points. Default is None to use rcParams['axes.titlepad'].
+            ax.set_xlabel('Days', fontsize = 7)
+            ax.set_ylabel('Survival Probability', fontsize = 7)
+            #ax.set_xlim([0, 10000])
     fig.suptitle('Survival analysis ('+cohort+')', fontsize = 15)
     fig.subplots_adjust(wspace = 0.3)
     fig.tight_layout()
@@ -226,6 +236,7 @@ def survival_analysis(df, target, q, directory, fig_width, figname, cohort):
     plt.savefig(os.path.join(directory, figname))  
     
     return valid_t, valid_t_pvalue, sig_t, sig_t_pvalue
+
 
 if __name__=='__main__':
     
