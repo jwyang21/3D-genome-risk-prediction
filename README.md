@@ -43,6 +43,9 @@ cd ../
 ```
 
 ### 3-2-2. Run opensea pipeline
+```shell
+bash opensea-pipeline/1_compute-score-opensea/scripts/1_all-samples-pc1.sh
+```
 
 #### 3-2-2-1. Compute score
 #### 3-2-2-2. Survival analyses
