@@ -41,7 +41,6 @@ python3 utils/make-450k-probe-metadata.py --cpg_type opensea
 python3 utils/make-450k-probe-bedgraph.py --cpg_type opensea
 ```
 
-
 ### 3-2-1. Make binned difference matrices (BDMs)    
 #### 3-2-1-1. Make BDMs for TCGA samples, using open sea CpG probes
 ```shell
@@ -57,7 +56,9 @@ cd ../
 ```
 #### 3-2-1-3. Make list of genomic bins used for constructing BDM.
 ```shell
-bash utils/scripts/1_find-bdm-bins.sh
+cd utils/scripts
+bash 1_find-bdm-bins.sh
+cd ../../
 ```
 
 ### 3-2-2. Run opensea pipeline
