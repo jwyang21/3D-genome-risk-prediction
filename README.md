@@ -1,8 +1,11 @@
 # Stem closeness
-## 1. overview
-### 1-1. qualitative overview
+## 1. Introduction and overview
+## 1-1. Introduction    
+Stem closeness is a novel metric to measure stem-likeness of a single sample. The overall pipelinen for computing stem closeness consists of 3 main steps: (1) Inferring 3D genome structure of a single sample, using DNA methylation data only (note that inferred 3D genome state is representated as a vector) -> (2) Computing distances between inferred 3D genome states -> (3) Use combinations of distance to quantify stem closeness. The figurew below describe more detailed overview of this pipeline.
+### 1-2. Overview
+#### 1-2-1. Qualitative overview
 ![230117_github_readme_-overview](https://user-images.githubusercontent.com/86412887/212884165-b1908130-92cb-4623-8d48-ebbde1cda9ce.png)
-### 1-2. quantitative overview
+#### 1-2-2. Quantitative overview
 ![30119_figurex_stem-closeness-computation-explanation-BDM-300dpi](https://user-images.githubusercontent.com/86412887/213362375-203bb05a-5253-49bb-b39e-53bd4b8c645f.png)
 ## 2. Installation       
 There are two environments needed: one for processing Hi-C data, and the other for computing stem closeness and running downstream analyses.     
