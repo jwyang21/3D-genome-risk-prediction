@@ -1,10 +1,10 @@
-name: hic-processing
+name: hic
 channels:
     - conda-forge
     - bioconda
     - defaults
 dependencies:
-    - python=3.6
+    - python=3.7
     - bwa=0.7.17
     - pairtools=0.3.0
     - sra-tools=2.10.1
@@ -12,3 +12,4 @@ dependencies:
     - sambamba=0.8.2
     - cooler
     - snakemake
+    - fanc
