@@ -40,8 +40,14 @@ cd ../
 conda activate stem-closeness
 ```
 #### 3-2-1. Preprocessing data
+- Download TCGA DNA methylation data from UCSC Xena ([3])
+```shell
+cd data/450k_xena
+snakemake -j 10
+cd ../../
+```
 - Construct metadata and bedgraph file of open sea CpG probes in 450K DNA methylation data
-  - Download manifest file for Infinium HumanMethylation450 v1.2 BeadChip, provided by Illumina ([3]) 
+  - Download manifest file for Infinium HumanMethylation450 v1.2 BeadChip, provided by Illumina ([4]) 
 ```shell
 cd data
 wget https://webdata.illumina.com/downloads/productfiles/humanmethylation450/humanmethylation450_15017482_v1-2.csv
@@ -61,13 +67,13 @@ python3 0_get_sample_name_list.py
 cd ../../
 ```
 #### 3-2-2. Make binned difference matrices (BDMs)    
-##### 3-2-2-1. Make BDMs for TCGA samples ([4]), using open sea CpG probes
+##### 3-2-2-1. Make BDMs for TCGA samples ([5]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-v2-opensea
 snakemake -j 10
 cd ../
 ```
-##### 3-2-2-2. Make BDMs for PCBC stem cell samples ([5]), using open sea CpG probes
+##### 3-2-2-2. Make BDMs for PCBC stem cell samples ([6]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-pcbc
 snakemake -j 10
@@ -183,7 +189,7 @@ wget https://ftp.ensembl.org/pub/grch37/current/regulation/homo_sapiens/homo_sap
 gzip -d homo_sapiens.GRCh37.Regulatory_Build.regulatory_features.20201218.gff.gz
 cd ../
 ```
-- Download chromatin state data ([6])
+- Download chromatin state data ([7])
 ```shell
 cd data/roadmap_epigenomics
 bash download.sh
@@ -235,7 +241,8 @@ bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.l
 ## Reference
 [1] Kim, Kyukwang, et al. "3DIV update for 2021: a comprehensive resource of 3D genome and 3D cancer genome." Nucleic Acids Research 49.D1 (2021): D38-D46.         
 [2] Schmitt, Anthony D., et al. "A compendium of chromatin contact maps reveals spatially active regions in the human genome." Cell reports 17.8 (2016): 2042-2059.       
-[3] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.            
-[4] Hutter, Carolyn, and Jean Claude Zenklusen. "The cancer genome atlas: creating lasting value beyond its data." Cell 173.2 (2018): 283-285.               
-[5] Salomonis, Nathan, et al. "Integrated genomic analysis of diverse induced pluripotent stem cells from the progenitor cell biology consortium." Stem cell reports 7.1 (2016): 110-125.        
-[6] Kundaje, Anshul, et al. "Integrative analysis of 111 reference human epigenomes." Nature 518.7539 (2015): 317-330.
+[3] Goldman, Mary J., et al. "Visualizing and interpreting cancer genomics data via the Xena platform." Nature biotechnology 38.6 (2020): 675-678.         
+[4] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.            
+[5] Hutter, Carolyn, and Jean Claude Zenklusen. "The cancer genome atlas: creating lasting value beyond its data." Cell 173.2 (2018): 283-285.               
+[6] Salomonis, Nathan, et al. "Integrated genomic analysis of diverse induced pluripotent stem cells from the progenitor cell biology consortium." Stem cell reports 7.1 (2016): 110-125.        
+[7] Kundaje, Anshul, et al. "Integrative analysis of 111 reference human epigenomes." Nature 518.7539 (2015): 317-330.
