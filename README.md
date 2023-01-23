@@ -30,17 +30,27 @@ cd ../
 ```shell
 conda activate stem-closeness
 ```
-#### 3-2-1. Construct metadata and bedgraph file ofopen sea CpG probes in 450K DNA methylation data
-- Download manifest file for Infinium HumanMethylation450 v1.2 BeadChip, provided by Illumina ([1]) 
+#### 3-2-1. Preprocessing data
+- Construct metadata and bedgraph file of open sea CpG probes in 450K DNA methylation data
+  - Download manifest file for Infinium HumanMethylation450 v1.2 BeadChip, provided by Illumina ([1]) 
 ```shell
 cd data
 wget https://webdata.illumina.com/downloads/productfiles/humanmethylation450/humanmethylation450_15017482_v1-2.csv
 cd ../
-
-python3 utils/make-450k-probe-metadata.py --cpg_type opensea
-python3 utils/make-450k-probe-bedgraph.py --cpg_type opensea
 ```
-
+  - Make metadata and bedgraph files
+```shell
+cd utils
+python3 make-450k-probe-metadata.py --cpg_type opensea
+python3 make-450k-probe-bedgraph.py --cpg_type opensea
+cd ../
+```
+- Construct list of sample names per cohort
+```shell
+cd utils/scripts
+python3 0_get_sample_name_list.py
+cd ../../
+```
 #### 3-2-2. Make binned difference matrices (BDMs)    
 ##### 3-2-2-1. Make BDMs for TCGA samples, using open sea CpG probes
 ```shell
@@ -165,9 +175,33 @@ cd ../../../
 ```
 #### 3-2-4. Run island pipeline
 ##### 3-2-4-1. DMR analysis
-
+```shell
+cd island-pipeline/3_dmr-island/scripts/
+bash 0_compute_binned_avg_island_beta.sh > ../log/0_compute_binned_avg_island_beta.log
+bash 1_compute-binned-island-beta-TN-diff-binsize-1e6.sh > ../log/1_compute-binned-island-beta-TN-diff-binsize-1e6.log
+bash 2_find_DMR.sh > ../log/2_find_DMR.log
+bash 3_find_DMR_features_mean_std_epigenome.sh > ../log/3_find_DMR_features_mean_std_epigenome.log
+bash 3_find_DMR_features_mean_std_gene_reg.sh > ../log/3_find_DMR_features_mean_std_gene_reg.log
+bash 4_collate_DMR_features.sh > ../log/4_collate_DMR_features.log
+bash 5_make-cohort-threshold-feature-list-threshold-mean_std.sh > ../log/5_make-cohort-threshold-feature-list-threshold-mean_std.log
+bash 6_write_np2txt.sh > ../log/6_write_np2txt.log
+bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.log
+cd ../../../
+```
 #### 3-2-5. Run shelf\_shore pipeline
 ##### 3-2-5-1. DMR analysis
+```shell
+cd shelf_shore-pipeline/3_dmr-shelf_shore/scripts
+bash 0_compute_binned_avg_shelf_shore_beta.sh > ../log/0_compute_binned_avg_shelf_shore_beta.log
+bash 1_compute-binned-shelf_shore-beta-TN-diff-binsize-1e6.sh > ../log/1_compute-binned-shelf_shore-beta-TN-diff-binsize-1e6.log
+bash 2_find_DMR.sh > ../log/2_find_DMR.log
+bash 3_find_DMR_features_mean_std_epigenome.sh > ../log/3_find_DMR_features_mean_std_epigenome.log
+bash 3_find_DMR_features_mean_std_gene_reg.sh > ../log/3_find_DMR_features_mean_std_gene_reg.log
+bash 4_collate_DMR_features.sh > ../log/4_collate_DMR_features.log
+bash 5_make-cohort-threshold-feature-list-threshold-mean_std.sh > ../log/5_make-cohort-threshold-feature-list-threshold-mean_std.log
+bash 6_write_np2txt.sh > ../log/6_write_np2txt.log
+bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.log
+```
 
 
 ## Reference
