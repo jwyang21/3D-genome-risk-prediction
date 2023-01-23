@@ -17,11 +17,11 @@ do
 			for use_weighted_avg in Y N
 			do
 				for num in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22
-                do
-                    echo "python3 5_compute-stem-closeness.py --num_chrom $num --standardize $standardize -w_dir $w_dir --result_dir $result_dir --usage_option $usage --score_type $score_type --normalize $normalize --minmax $minmax --matrix_type $matrix_type --distance $distance --use_weighted_avg $use_weighted_avg --minmax_file_dir $minmax_file_dir --cohort $cohort"
-                    python3 5_compute-stem-closeness.py --num_chrom $num --standardize $standardize -w_dir $w_dir --result_dir $result_dir --usage_option $usage --score_type $score_type --normalize $normalize --minmax $minmax --matrix_type $matrix_type --distance $distance --use_weighted_avg $use_weighted_avg --minmax_file_dir $minmax_file_dir --cohort $cohort
-                done
-            done
+                		do
+                    			echo "python3 5_compute-stem-closeness.py --num_chrom $num --standardize $standardize -w_dir $w_dir --result_dir $result_dir --usage_option $usage --score_type $score_type --normalize $normalize --minmax $minmax --matrix_type $matrix_type --distance $distance --use_weighted_avg $use_weighted_avg --minmax_file_dir $minmax_file_dir --cohort $cohort"
+                    			python3 5_compute-stem-closeness.py --num_chrom $num --standardize $standardize -w_dir $w_dir --result_dir $result_dir --usage_option $usage --score_type $score_type --normalize $normalize --minmax $minmax --matrix_type $matrix_type --distance $distance --use_weighted_avg $use_weighted_avg --minmax_file_dir $minmax_file_dir --cohort $cohort
+                		done
+            		done
 		done
 	done
 done
