@@ -92,6 +92,11 @@ cd utils/scripts
 python3 2_make-TCGA-repr-bdm.py
 python3 3_make-PAAD-repr-vector-bdm.py
 python3 4_make-SC-repr-bdm.py
+cd ../../
+```
+- Compare BDM-derived PC1 and IEBDM-derived PC1
+```shell
+cd utils/scripts
 python3 5_bdm-iebdm-pc1-pcc.py
 cd ../../
 ```
