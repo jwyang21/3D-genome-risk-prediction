@@ -22,7 +22,7 @@ mamba env create --file stem-closeness.yaml
 ```shell
 cd hic-processing
 snakemake --cores 100 --resources network=1 --restart-time 3
-python 230111_ab2corrmat.py
+python ab2corrmat.py
 cd ../
 ```
 
