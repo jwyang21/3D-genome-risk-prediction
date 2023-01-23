@@ -25,7 +25,7 @@ def parse_arguments():
     args.add_argument('--cpg_type', help = 'CpG type. island, opensea, shelf_shore', type = str, required = True)
     
     #args.add_argument('--log', help = 'log filename', type = str, required = True)
-    # example: '/data/project/3dith/pipelines/opensea-pipeline/2_downstream-opensea/log/2_pcc-avg_beta-stem_closeness-ALL-v2.log'
+    # example: '/data/project/3dith/pipelines/opensea-pipeline/2_downstream-opensea/log/pcc-avg_beta-stem_closeness-ALL.log'
     
     #args.add_argument('-w_dir', '--working_dir', help = 'working directory', type = str, required = True)
     # example: '/data/project/3dith/pipelines/opensea-pipeline/2_downstream-opensea'
