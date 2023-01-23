@@ -15,23 +15,42 @@ pip install fanc
 ```
 ### 2-2. Installing conda environment for running stem closeness-related analyses
 ```shell
-conda env create --file stem-closeness.yml
+mamba env create --file stem-closeness.yaml
 ```
 ## 3. Process
 
-### 3-1. Make binned difference matrices (BDMs)
-### 3-2. Run opensea pipeline
+### 3-1. Process Hi-C data 
 
-#### 3-2-1. Compute score
-#### 3-2-2. Survival analyses
-#### 3-2-3. DMR analyses
+### 3-2. Conduct stem closeness-related analyses
+```shell
+conda activate stem-closeness
+```
+### 3-2-1. Make binned difference matrices (BDMs)    
+#### 3-2-1-1. Make BDMs for TCGA samples, using open sea CpG probes
+```shell
+cd binned-difference-matrix-v2-opensea
+snakemake -j 10
+cd ../
+```
+#### 3-2-1-2. Make BDMs for PCBC stem cell samples, using open sea CpG probes
+```shell
+cd binned-difference-matrix-pcbc
+snakemake -j 10
+cd ../
+```
 
-### 3-3. Run island pipeline
-#### 3-3-1. Compute score
-#### 3-3-2. Survival analyses
-#### 3-3-3. DMR analyses
+### 3-2-2. Run opensea pipeline
 
-### 3-4. Run shelf\_shore pipeline
+#### 3-2-2-1. Compute score
+#### 3-2-2-2. Survival analyses
+#### 3-2-2-3. DMR analyses
+
+### 3-4. Run island pipeline
 #### 3-4-1. Compute score
 #### 3-4-2. Survival analyses
 #### 3-4-3. DMR analyses
+
+### 3-5. Run shelf\_shore pipeline
+#### 3-5-1. Compute score
+#### 3-5-2. Survival analyses
+#### 3-5-3. DMR analyses
