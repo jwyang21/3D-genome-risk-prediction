@@ -52,13 +52,13 @@ python3 0_get_sample_name_list.py
 cd ../../
 ```
 #### 3-2-2. Make binned difference matrices (BDMs)    
-##### 3-2-2-1. Make BDMs for TCGA samples, using open sea CpG probes
+##### 3-2-2-1. Make BDMs for TCGA samples ([2]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-v2-opensea
 snakemake -j 10
 cd ../
 ```
-##### 3-2-2-2. Make BDMs for PCBC stem cell samples, using open sea CpG probes
+##### 3-2-2-2. Make BDMs for PCBC stem cell samples ([3]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-pcbc
 snakemake -j 10
@@ -205,4 +205,6 @@ bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.l
 
 
 ## Reference
-[1] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.     
+[1] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.         
+[2] Hutter, Carolyn, and Jean Claude Zenklusen. "The cancer genome atlas: creating lasting value beyond its data." Cell 173.2 (2018): 283-285.             
+[3] Salomonis, Nathan, et al. "Integrated genomic analysis of diverse induced pluripotent stem cells from the progenitor cell biology consortium." Stem cell reports 7.1 (2016): 110-125.              
