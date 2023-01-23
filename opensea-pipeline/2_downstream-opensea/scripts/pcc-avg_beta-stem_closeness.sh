@@ -1,4 +1,3 @@
-#command: bash 2_pcc-avg_beta-stem_closeness.sh > ../log/2_pcc-avg_beta-stem_closeness-ALL.log
 cpg_type=opensea
 w_dir=/data/project/3dith/pipelines/$cpg_type-pipeline/2_downstream-$cpg_type
 score_f=/data/project/3dith/data/cohort-1-best-score-km.csv
@@ -9,4 +8,3 @@ do
 	echo "python3 pcc-avg_beta-stem_closeness.py -w_dir $w_dir --cohort $cohort --cpg_type $cpg_type --score_fname $score_f"
 	python3 pcc-avg_beta-stem_closeness.py -w_dir $w_dir --cohort $cohort --cpg_type $cpg_type --score_fname $score_f
 done
-
