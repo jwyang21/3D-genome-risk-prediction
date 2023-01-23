@@ -8,7 +8,7 @@ m=bdm
 for cohort in TCGA-BRCA TCGA-COAD TCGA-ESCA TCGA-KIRC TCGA-LIHC TCGA-LUSC TCGA-PAAD TCGA-PRAD
 do
 
-    echo "python3 8-1_compare-Tumor-hic-450k-pc1-individual.py --cpg_type $cpg_type --matching_df_fname $matching_df_fname --hic_corrmat_dir $hic_corrmat_dir --hg19_len_fname $hg19_len_fname --binsize $binsize --cohort $cohort --matrix_type $m"
-    python3 8-1_compare-Tumor-hic-450k-pc1-individual.py --cpg_type $cpg_type --matching_df_fname $matching_df_fname --hic_corrmat_dir $hic_corrmat_dir --hg19_len_fname $hg19_len_fname --binsize $binsize --cohort $cohort --matrix_type $m
+    echo "python3 compare-Tumor-hic-450k-pc1-individual.py --cpg_type $cpg_type --matching_df_fname $matching_df_fname --hic_corrmat_dir $hic_corrmat_dir --hg19_len_fname $hg19_len_fname --binsize $binsize --cohort $cohort --matrix_type $m"
+    python3 compare-Tumor-hic-450k-pc1-individual.py --cpg_type $cpg_type --matching_df_fname $matching_df_fname --hic_corrmat_dir $hic_corrmat_dir --hg19_len_fname $hg19_len_fname --binsize $binsize --cohort $cohort --matrix_type $m
     
 done
