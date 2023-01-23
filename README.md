@@ -22,6 +22,7 @@ mamba env create --file stem-closeness.yaml
 ```shell
 cd hic-processing
 snakemake --cores 100 --resources network=1 --restart-time 3
+cd ../
 ```
 
 ### 3-2. Conduct stem closeness-related analyses
