@@ -1,3 +1,0 @@
-cpg_type=island
-echo "python3 8_compute-chromatin-state-proportion.py --cpg_type $cpg_type --cohort2eid /data/project/3dith/data/etc/cohort2eid.txt --chromatin_states /data/project/3dith/data/chromatin_states.npy --input_fname DMR_EPI_features_threshold_mean_std_len.npz > ../log/8_compute-chromatin-state-proportion.log"
-python3 8_compute-chromatin-state-proportion.py --cpg_type $cpg_type --cohort2eid /data/project/3dith/data/etc/cohort2eid.txt --chromatin_states /data/project/3dith/data/chromatin_states.npy --input_fname DMR_EPI_features_threshold_mean_std_len.npz > ../log/8_compute-chromatin-state-proportion.log
