@@ -4,5 +4,5 @@ binsize=1000000
 tcga_fire_cohort_fname=/data/project/3dith/data/etc/tcga-fire-cohorts.csv
 hic_pc1_fname=/data/project/3dith/data/fire_pc1.csv
 m=bdm
-echo "python3 8-2_compare-Normal-FIRE-hic-450k-pc1-individual.py --cpg_type $cpg_type --hg19_len_fname $hg19_len_fname --binsize $binsize --tcga_fire_cohort_fname $tcga_fire_cohort_fname --hic_pc1_fname $hic_pc1_fname --matrix_type $m"
-python3 8-2_compare-Normal-FIRE-hic-450k-pc1-individual.py --cpg_type $cpg_type --hg19_len_fname $hg19_len_fname --binsize $binsize --tcga_fire_cohort_fname $tcga_fire_cohort_fname --hic_pc1_fname $hic_pc1_fname --matrix_type $m
+echo "python3 compare-Normal-FIRE-hic-450k-pc1-individual.py --cpg_type $cpg_type --hg19_len_fname $hg19_len_fname --binsize $binsize --tcga_fire_cohort_fname $tcga_fire_cohort_fname --hic_pc1_fname $hic_pc1_fname --matrix_type $m"
+python3 compare-Normal-FIRE-hic-450k-pc1-individual.py --cpg_type $cpg_type --hg19_len_fname $hg19_len_fname --binsize $binsize --tcga_fire_cohort_fname $tcga_fire_cohort_fname --hic_pc1_fname $hic_pc1_fname --matrix_type $m
