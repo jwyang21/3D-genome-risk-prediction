@@ -6,9 +6,8 @@ do
     do
         for standardize in Y N
         do
-            echo "python3 $cpg_type-pipeline/1_compute-score-$cpg_type/scripts/2_compute-reference.py --standardize $standardize --cohort $cohort -w_dir $cpg_type-pipeline/1_compute-score-$cpg_type --pc1_upper_dir $cpg_type-pipeline/1_compute-score-$cpg_type/result -r_dir $cpg_type-pipeline/1_compute-score-$cpg_type/result --score_type $score_type --usage_option half -m_type $m_type"
-            python3 $cpg_type-pipeline/1_compute-score-$cpg_type/scripts/2_compute-reference.py --standardize $standardize --cohort $cohort -w_dir $cpg_type-pipeline/1_compute-score-$cpg_type --pc1_upper_dir $cpg_type-pipeline/1_compute-score-$cpg_type/result -r_dir $cpg_type-pipeline/1_compute-score-$cpg_type/result --score_type $score_type --usage_option half -m_type $m_type
+            echo "python3 2_compute-reference.py --standardize $standardize --cohort $cohort -w_dir /data/project/3dith/pipelines/$cpg_type-pipeline/1_compute-score-$cpg_type --pc1_upper_dir /data/project/3dith/pipelines/$cpg_type-pipeline/1_compute-score-$cpg_type/result -r_dir /data/project/3dith/pipelines/$cpg_type-pipeline/1_compute-score-$cpg_type/result --score_type $score_type --usage_option half -m_type $m_type"
+            python3 2_compute-reference.py --standardize $standardize --cohort $cohort -w_dir /data/project/3dith/pipelines/$cpg_type-pipeline/1_compute-score-$cpg_type --pc1_upper_dir /data/project/3dith/pipelines/$cpg_type-pipeline/1_compute-score-$cpg_type/result -r_dir /data/project/3dith/pipelines/$cpg_type-pipeline/1_compute-score-$cpg_type/result --score_type $score_type --usage_option half -m_type $m_type
         done
     done
 done
-~
