@@ -1,3 +1,4 @@
+# download data from roadmap epigenomics (https://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/core_K27ac/jointModel/final/)
 wget https://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/core_K27ac/jointModel/final/E066_18_core_K27ac_mnemonics.bed.gz
 wget https://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/core_K27ac/jointModel/final/E075_18_core_K27ac_mnemonics.bed.gz
 wget https://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/core_K27ac/jointModel/final/E079_18_core_K27ac_mnemonics.bed.gz
