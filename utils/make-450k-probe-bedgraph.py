@@ -20,9 +20,8 @@ if __name__=='__main__':
         print("===\ncohort: {}".format(cohort))
         beta = pd.read_csv(f'/data/project/3dith/data/450k_xena/{cohort}.HumanMethylation450.tsv', sep = '\t', index_col = 0).dropna()
         beta_merged = beta.merge(meta, left_index = True, right_on = 'name')
-
-        result_dir = os.path.join('/data/project/jeewon/research/3D-ITH/data/450k_bdgs_v2', cohort+'-'+args.cpg_type) #permission issue
-        #result_dir = os.path.join('/data/project/3dith/data/450k_bdgs_v2/', cohort+'-'+args.cpg_type) #original result_dir
+        
+        result_dir = os.path.join('/data/project/3dith/data/450k_bdgs_v2/', cohort+'-'+args.cpg_type) 
         print("result_dir: {}".format(result_dir))
 
         if not os.path.exists(result_dir):
