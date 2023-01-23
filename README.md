@@ -25,6 +25,7 @@ mamba env create --file stem-closeness.yaml
 cd hic-processing
 snakemake --cores 100 --resources network=1 --restart-time 3
 python ab2corrmat.py
+bash copy_corrmat.sh
 cd ../
 ```
 #### 3-2-2. Processing PC1 values computed from Hi-C data of normal tissues ([2])
