@@ -174,6 +174,20 @@ python3 plot-HR.py
 cd ../../../
 ```
 ##### 3-2-3-3. DMR analysis
+- Download annotation about gene and regulatory features (version: GRCh37)
+```shell
+cd data
+wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.chr_patch_hapl_scaff.annotation.gtf.gz
+gzip -d gencode.v19.chr_patch_hapl_scaff.annotation.gtf.gz
+wget https://ftp.ensembl.org/pub/grch37/current/regulation/homo_sapiens/homo_sapiens.GRCh37.Regulatory_Build.regulatory_features.20201218.gff.gz
+gzip -d homo_sapiens.GRCh37.Regulatory_Build.regulatory_features.20201218.gff.gz
+cd ../
+```
+- Download chromatin state data ([6])
+```shell
+cd data/roadmap_epigenomics
+bash download.sh
+```
 ```shell
 cd opensea-pipeline/3_dmr-opensea/scripts
 bash 0_compute_binned_avg_opensea_beta.sh > ../log/0_compute_binned_avg_opensea_beta.log
@@ -218,10 +232,10 @@ bash 6_write_np2txt.sh > ../log/6_write_np2txt.log
 bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.log
 ```
 
-
 ## Reference
-[1] Kim, Kyukwang, et al. "3DIV update for 2021: a comprehensive resource of 3D genome and 3D cancer genome." Nucleic Acids Research 49.D1 (2021): D38-D46.
-[2] Schmitt, Anthony D., et al. "A compendium of chromatin contact maps reveals spatially active regions in the human genome." Cell reports 17.8 (2016): 2042-2059.
-[3] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.         
-[4] Hutter, Carolyn, and Jean Claude Zenklusen. "The cancer genome atlas: creating lasting value beyond its data." Cell 173.2 (2018): 283-285.             
-[5] Salomonis, Nathan, et al. "Integrated genomic analysis of diverse induced pluripotent stem cells from the progenitor cell biology consortium." Stem cell reports 7.1 (2016): 110-125.              
+[1] Kim, Kyukwang, et al. "3DIV update for 2021: a comprehensive resource of 3D genome and 3D cancer genome." Nucleic Acids Research 49.D1 (2021): D38-D46.         
+[2] Schmitt, Anthony D., et al. "A compendium of chromatin contact maps reveals spatially active regions in the human genome." Cell reports 17.8 (2016): 2042-2059.       
+[3] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.            
+[4] Hutter, Carolyn, and Jean Claude Zenklusen. "The cancer genome atlas: creating lasting value beyond its data." Cell 173.2 (2018): 283-285.               
+[5] Salomonis, Nathan, et al. "Integrated genomic analysis of diverse induced pluripotent stem cells from the progenitor cell biology consortium." Stem cell reports 7.1 (2016): 110-125.        
+[6] Kundaje, Anshul, et al. "Integrative analysis of 111 reference human epigenomes." Nature 518.7539 (2015): 317-330.
