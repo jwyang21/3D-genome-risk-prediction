@@ -109,6 +109,7 @@ cd ../../../
 
 ##### 3-2-3-2. Downstream analyses 
 - Make representative PC1 vectors of tumor, normal, and stem cells, respectively.
+  - Representative PC1s are made by averaging PC1 vectors of 10 samples, computed from the BDM of same chromosome. 
 ```shell
 cd utils/scripts
 python3 2_make-TCGA-repr-bdm.py
