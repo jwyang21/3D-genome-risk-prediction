@@ -50,8 +50,8 @@ cd ../
   - Make metadata and bedgraph files
 ```shell
 cd utils
-python3 make-450k-probe-metadata.py --cpg_type opensea
-python3 make-450k-probe-bedgraph.py --cpg_type opensea
+bash make-450k-probe-metadata.sh
+bash make-450k-probe-bedgraph.sh
 cd ../
 ```
 - Construct list of sample names per cohort
