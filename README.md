@@ -22,7 +22,7 @@ mamba env create --file stem-closeness.yaml
 #### 3-1-1. Processing Hi-C data from 3DIV database ([1])
 - For this case, we need to process raw Hi-C data to get PC1 vectors, since PC1 values are not provided directly.
   - In case of 'stem-closeness/hic-processing/manifest.csv' in this repository, information of Hi-C data obtained from cancer cell lines are written.
-  - When processing additional Hi-C data, name, library\_layout, run\n_accession information of that data should be written in the aforementioned manifest.csv file instead.
+  - When processing Hi-C data of other cell line, <U>name, library\_layout, run\_accession</U> information of that data should be written in the aforementioned manifest.csv file instead.
   - Each name in this manifest.csv file should be different. No two different samples can have identical name in this file.
   - To use the provided Hi-C processing code, library\_layout should be 'paired'. 
     - Library\_layout information can be checked in [SRA](https://www.ncbi.nlm.nih.gov/sra)
