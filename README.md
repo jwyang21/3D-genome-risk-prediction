@@ -22,6 +22,7 @@ mamba env create --file stem-closeness.yaml
 ```shell
 cd hic-processing
 snakemake --cores 100 --resources network=1 --restart-time 3
+python 230111_ab2corrmat.py
 cd ../
 ```
 
@@ -42,10 +43,15 @@ cd binned-difference-matrix-pcbc
 snakemake -j 10
 cd ../
 ```
+#### 3-2-1-3. Make list of genomic bins used for constructing BDM.
+```shell
+bash utils/scripts/1_find-bdm-bins.sh
+```
 
 ### 3-2-2. Run opensea pipeline
 ```shell
 bash opensea-pipeline/1_compute-score-opensea/scripts/1_all-samples-pc1.sh
+bash opensea-pipeline/1_compute-score-opensea/scripts/2_compute-reference.sh
 ```
 
 #### 3-2-2-1. Compute score
