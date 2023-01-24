@@ -40,7 +40,6 @@ def parse_arguments():
     return args.parse_args()
 
 def get_sample_list(cohort):
-    
     samples = np.load(SAMPLE_NAME_FILE)[cohort]
     S = samples.tolist()
     if cohort=='PCBC':
@@ -158,4 +157,3 @@ if __name__ == '__main__':
     print("----")
 
     plt.clf()
-
