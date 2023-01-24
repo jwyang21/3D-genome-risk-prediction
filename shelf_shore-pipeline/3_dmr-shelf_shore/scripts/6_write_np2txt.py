@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
-
-
 import numpy as np
 import pandas as pd
 import os
@@ -11,8 +5,6 @@ import sys
 import pickle
 import argparse
 
-
-# global variables
 NORMAL7_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-PRAD TCGA-KIRC TCGA-ESCA TCGA-UCEC TCGA-KIRP TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-CHOL TCGA-PAAD TCGA-BRCA TCGA-COAD'.split(' ')
 BIG_CATEGORY = ['GENE', 'REG', 'EPI']
 THRESHOLD = ['mean', 'mean_std', 'mean_2std']
@@ -30,28 +22,15 @@ cohort2eid.columns = ['cohort', 'eid']
 eid_cohorts = cohort2eid.cohort.values
 CHR_LIST = ['chr'+str(i) for i in np.arange(1, 23)]
 
-
-
 def parse_arguments():
     args = argparse.ArgumentParser()
-    #args.add_argument('-c', '--cohort', help = 'TCGA cohort', type = str, required = True)
-    #args.add_argument('-b', '--binsize', help = 'binsize', type = int, required = True, default = int(1e6))
     args.add_argument('-t', '--threshold', help = 'DMR threshold. mean, mean_std, mean_2std', type = str, required = True, default = 'mean_std')
     args.add_argument('-w_dir', '--working_dir', help = 'working directory', type = str, required = True)
     return args.parse_args()
 
-
-# # GENE
-
-# ## DMR의 GENE feature ID들 (ENSG, ENST) 모아서 txt file로 쓰기. (cohort별, threshold별)
-
-# In[7]:
-
 if __name__=='__main__':
     args = parse_arguments()
     os.chdir(args.working_dir)
-
-
     for cohort in NORMAL7_COHORT:
         cohort_dir = os.path.join(os.getcwd(), 'result', cohort)
         npz_fname = 'DMR_GENE_features_threshold_'+args.threshold+'_id_len.npz'
@@ -60,7 +39,6 @@ if __name__=='__main__':
         current_enst = np.load(full_npz_fname)['ENST_all']
         result_ensg_fname = os.path.join(cohort_dir, 'ENSG_'+args.threshold+'.txt')
         result_enst_fname = os.path.join(cohort_dir, 'ENST_'+args.threshold+'.txt')
-
         f = open(result_ensg_fname, 'w')
         for i in range(len(current_ensg)):
             f.write(current_ensg[i])
@@ -68,7 +46,6 @@ if __name__=='__main__':
                 f.write("\n")
         f.close()
         print(result_ensg_fname)
-
         f = open(result_enst_fname, 'w')
         for i in range(len(current_enst)):
             f.write(current_enst[i])
@@ -76,30 +53,3 @@ if __name__=='__main__':
                 f.write("\n")
         f.close()
         print(result_enst_fname)
-
-
-    # # Regulatory features
-
-    # ## ENSR ID들을 모아서 txt file로 쓰기 (chort 별, threshold 별)
-
-    # In[8]:
-
-    '''
-    for cohort in NORMAL7_COHORT:
-        cohort_dir = os.path.join(os.getcwd(), 'result', cohort)
-        npz_fname = 'DMR_REG_features_threshold_'+args.threshold+'_id_len.npz'
-        full_npz_fname = os.path.join(cohort_dir, npz_fname)
-        current_ensr = np.load(full_npz_fname)['ENSR_all']
-        result_ensr_fname = os.path.join(cohort_dir, 'ENSR_'+args.threshold+'.txt')
-
-        f = open(result_ensr_fname, 'w')
-        for i in range(len(current_ensr)):
-            f.write(current_ensr[i])
-            if i != len(current_ensr)-1:
-                f.write("\n")
-        f.close()
-        print(result_ensr_fname)
-
-    '''
-
-
