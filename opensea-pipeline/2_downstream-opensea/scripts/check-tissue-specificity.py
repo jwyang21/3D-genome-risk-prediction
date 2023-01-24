@@ -1,16 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
-#%run imports.ipynb
-
-
-# In[26]:
-
-
-# contents in imports.ipynb
 import pandas as pd
 import numpy as np
 
@@ -26,11 +13,13 @@ from tqdm import tqdm
 from scipy import stats
 from scipy.stats import pearsonr
 import random
+import seaborn as sns
 
 mpl.rcParams['figure.dpi'] = 300
 plt.rc('font', family='FreeSans', size=7)
-
 plt.rc('figure', figsize=(1.5, 1.5))
+plt.rc('xtick', labelsize=7)
+plt.rc('ytick', labelsize=7)
 
 pd.set_option("display.max_columns", None)
 
@@ -38,62 +27,19 @@ def save_figures(f, exts=['png', 'pdf']):
     for ext in exts:
         plt.savefig(f + f'.{ext}', dpi=300, bbox_inches='tight', transparent=True)
 
-
-# In[27]:
-
-
-plt.rc('xtick', labelsize=7)
-plt.rc('ytick', labelsize=7)
-
-
-# In[28]:
-
-
-import seaborn as sns
-#sns.set(font = 'FreeSans', font_scale = 7)
-
-
-# ## global variables
-
-# In[4]:
-
-
 NORMAL7_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-PRAD TCGA-KIRC TCGA-ESCA TCGA-UCEC TCGA-KIRP TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-CHOL TCGA-PAAD TCGA-BRCA TCGA-COAD'.split(' ')
-
-
-# In[5]:
-
 
 cpg_type = 'opensea'
 assert cpg_type in ['opensea', 'island', 'shelf_shore']
 
-
-# In[6]:
-
-
 CHR_LIST = ['chr'+str(i) for i in np.arange(1, 23)]
 
-
-# In[7]:
-
-
-# fix random seed
 np.random.seed(42)
 random.seed(42)
-
-
-# In[8]:
-
 
 save_dir = f'/data/project/3dith/pipelines/{cpg_type}-pipeline/2_downstream-{cpg_type}/result/tissue-specificity-bdm'
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
-
-
-# ## functions
-
-# In[9]:
-
 
 def smoothen(v, window):
     return pd.Series(v).rolling(window=window, center=True).agg('mean').dropna().values
@@ -101,41 +47,7 @@ def smoothen(v, window):
 def standardize(v):
     return (v - v.mean()) / v.std()
 
-
-# ## FIRE의 정보도 필요할 때.
-
-# In[8]:
-
-
-#tcga_fire_cohort = pd.read_csv('/data/project/3dith/data/etc/tcga-fire-cohorts.csv', index_col = 0)
-# tcga_fire_cohort.loc['TCGA-LIHC','FIRE'] # -> 'LI'
-# print(tcga_fire_cohort.columns) #Index(['FIRE', 'TCGA_disease', 'FIRE_tissue'], dtype='object')
-
-
-# In[9]:
-
-
-#tcga_cohort_info = pd.read_csv('/data/project/3dith/data/etc/manifest.csv', index_col = 0)
-
-
-# ## 1. tissue specificity
-
-# In[10]:
-
-
-#cohort_few_normal = ['TCGA-CHOL', 'TCGA-ESCA', 'TCGA-PAAD']
-
-
-# ## 1-1. Pick representative tumor and normal samples
-
-# In[11]:
-
-
 repr_dir = f'/data/project/3dith/pipelines/{cpg_type}-pipeline/2_downstream-{cpg_type}/result/repr_vectors-bdm'
-
-
-# In[12]:
-
 
 T_colnames = [f'{chrom}_T' for chrom in CHR_LIST]
 N_colnames = [f'{chrom}_N' for chrom in CHR_LIST]
@@ -151,14 +63,8 @@ for cohort in NORMAL7_COHORT:
         
         T_repr_num_df.loc[cohort][f'{chrom}_T'] = len(glob.glob(os.path.join(cohort_repr_dir, f'repr_T_vector_{chrom}_*.npy')))
         N_repr_num_df.loc[cohort][f'{chrom}_N'] = len(glob.glob(os.path.join(cohort_repr_dir, f'repr_N_vector_{chrom}_*.npy')))
-        #print(cohort, repr_T_num, repr_N_num)
 
-
-# In[13]:
-
-
-#threshold = 3
-T_criterion = 18 #사용할 representative vector 개수 (per cohort)
+T_criterion = 18 
 cohort_few_T = []
 for cohort in T_repr_num_df.index.values:
     if T_repr_num_df.loc[cohort]['chr1_T'] < T_criterion:
@@ -170,48 +76,22 @@ for cohort in N_repr_num_df.index.values:
     if N_repr_num_df.loc[cohort]['chr1_N'] < N_criterion:
         cohort_few_N.append(cohort)
 
-
-# In[15]:
-
-
 print(f'cohrot having less than {T_criterion} representative T vectors: {cohort_few_T}')
 print(f'cohrot having less than {N_criterion} representative N vectors: {cohort_few_N}')
-
-
-# In[16]:
-
 
 NORMAL7_T_COHORT = list(set(NORMAL7_COHORT)-set(cohort_few_T))
 NORMAL7_N_COHORT = list(set(NORMAL7_COHORT)-set(cohort_few_N))
 
-
-# In[17]:
-
-
 print(f"cohorts for tumor-tumor comparison: \n {NORMAL7_T_COHORT}")
 print(f"cohorts for normal-normal comparison: \n {NORMAL7_N_COHORT}")
-
-
-# In[ ]:
-
-
-# sample min(criterion, num_repr_vectors) for each cohort and each chrom.
-
-
-# In[18]:
-
 
 for cohort in NORMAL7_T_COHORT:
     for chrom in CHR_LIST:
         globals()[f'{cohort}_{chrom}_T_sampled'] = random.sample(globals()[f'{cohort}_{chrom}_T'], min(T_criterion, T_repr_num_df.loc[cohort][f'{chrom}_T']))
-#print("---")
+
 for cohort in NORMAL7_N_COHORT:
     for chrom in CHR_LIST:
         globals()[f'{cohort}_{chrom}_N_sampled'] = random.sample(globals()[f'{cohort}_{chrom}_N'], min(N_criterion, N_repr_num_df.loc[cohort][f'{chrom}_N']))
-
-
-# In[20]:
-
 
 repr_T_sampled = {}
 for cohort in NORMAL7_COHORT:
@@ -222,17 +102,6 @@ for cohort in NORMAL7_COHORT:
 np.savez(os.path.join(save_dir, 'T_sampled-reprs'), **repr_T_sampled)
 print(os.path.join(save_dir, 'T_sampled-reprs.npz'))
 
-
-# In[25]:
-
-
-#f = np.load('/data/project/3dith/pipelines/opensea-pipeline/2_downstream-opensea/result/tissue-specificity/T_sampled-reprs.npz')
-#list(f.keys())
-
-
-# In[21]:
-
-
 repr_N_sampled = {}
 for cohort in NORMAL7_COHORT:
     if cohort not in cohort_few_N:
@@ -242,25 +111,6 @@ for cohort in NORMAL7_COHORT:
 
 np.savez(os.path.join(save_dir, 'N_sampled-reprs'), **repr_N_sampled)
 print(os.path.join(save_dir, 'N_sampled-reprs.npz'))
-
-
-# In[23]:
-
-
-#f = np.load('/data/project/3dith/pipelines/opensea-pipeline/2_downstream-opensea/result/tissue-specificity/N_sampled-reprs.npz')
-#list(f.keys())
-
-
-# In[16]:
-
-
-#f = np.load('/data/project/3dith/data/etc/utils-230115_check-tissue-specificity-v2.sampled-reprs.npz')
-
-
-# ## Tumor-Tumor comparison
-
-# In[18]:
-
 
 print("Tumor-Tumor comparison")
 type_full = 'Tumor'
@@ -276,16 +126,13 @@ for i in range(len(NORMAL7_T_COHORT)):
     for j in range(i, len(NORMAL7_T_COHORT)):
 
         probe_cohort = NORMAL7_T_COHORT[j]
-        #print(f"---\nProbe: {probe_cohort}")
 
         probe_key = probe_cohort.split('-')[1]
 
         for chrom in CHR_LIST:
-            #print(f"\n{chrom}")
             target_bins = np.load(f'/data/project/3dith/data/bdm_bins/{cpg_type}/{target_cohort}_diffmat_bins.npz')[f'{chrom}_bins']
             probe_bins = np.load(f'/data/project/3dith/data/bdm_bins/{cpg_type}/{probe_cohort}_diffmat_bins.npz')[f'{chrom}_bins']
 
-            #initialize
             globals()[f'{type_full}_{target_key}_{probe_key}_{chrom}_pcc'] = []
             globals()[f'{type_full}_{target_key}_{probe_key}_{chrom}_pval'] = []
 
@@ -294,7 +141,6 @@ for i in range(len(NORMAL7_T_COHORT)):
 
                 target_mask = [x in intersecting_bins for x in target_bins]
                 probe_mask = [x in intersecting_bins for x in probe_bins]
-
 
             for k in range(len(globals()[f'{target_cohort}_{chrom}_{type_}_sampled'])):
                 current_target_fname = globals()[f'{target_cohort}_{chrom}_{type_}_sampled'][k]
@@ -313,7 +159,6 @@ for i in range(len(NORMAL7_T_COHORT)):
 
                     assert len(masked_target) == len(masked_probe)
 
-
                     pcc, pval = pearsonr(masked_target, masked_probe)
                     globals()[f'{type_full}_{target_key}_{probe_key}_{chrom}_pcc'].append(pcc)
                     globals()[f'{type_full}_{target_key}_{probe_key}_{chrom}_pval'].append(pval)  
@@ -324,17 +169,9 @@ for i in range(len(NORMAL7_T_COHORT)):
                     if current_pval_key not in pval_key:
                         pval_key.append(current_pval_key)
 
-
-# In[19]:
-
-
 print(f'num_cohorts for Tumor-Tumor comparison: {len(NORMAL7_T_COHORT)}')
 print(f'num_all_pcc: {len(pcc_key)}')
 print(f'num_all_pval: {len(pval_key)}')
-
-
-# In[20]:
-
 
 type_full = 'Tumor'
 globals()[f'{type_full}_pcc_all'] = {}
@@ -347,21 +184,12 @@ for y in pval_key:
 print(f"num_total_pcc ({type_full}): {len(globals()[f'{type_full}_pcc_all'])}")
 print(f"num_total_pval ({type_full}): {len(globals()[f'{type_full}_pval_all'])}")
 
-
-# In[54]:
-
-
 np.savez(os.path.join(save_dir, f'all_{cpg_type}_{type_full}_pcc'), **globals()[f'{type_full}_pcc_all'])
 np.savez(os.path.join(save_dir, f'all_{cpg_type}_{type_full}_pval'), **globals()[f'{type_full}_pval_all'])
 
 print(os.path.join(save_dir, f'all_{cpg_type}_{type_full}_pcc.npz'))
 print(os.path.join(save_dir, f'all_{cpg_type}_{type_full}_pval.npz'))
 
-
-# In[26]:
-
-
-# 각 chromosome 별 pcc key들을 모으기. 
 type_full = 'Tumor'
 for chrom in CHR_LIST:
     globals()[f'{type_full}_{chrom}_pcc_key'] = []
@@ -373,15 +201,10 @@ for chrom in CHR_LIST:
         if chrom+'_' in y:
             globals()[f'{type_full}_{chrom}_pval_key'].append(y)
 
-
-# In[50]:
-
-
 type_ = 'T'
 type_full = 'Tumor'
 indices = [x.split('-')[1] for x in NORMAL7_T_COHORT]
 for chrom in CHR_LIST:
-#for chrom in CHR_LIST[:1]:
     globals()[f'{type_}_{chrom}_pcc_df'] = pd.DataFrame(index = indices, columns = indices)
     globals()[f'{type_}_{chrom}_num_sig_pval_df'] = pd.DataFrame(index = indices, columns = indices)
     
@@ -395,7 +218,6 @@ for chrom in CHR_LIST:
                 current_pval_key = f'{type_full}_{probe}_{target}_{chrom}_pval'
             tmp = globals()[current_pval_key]
             pval_mask = [x <= 5e-2 for x in tmp]
-            #print(target, probe, np.array(pval_mask).sum())
 
             current_pcc_key = current_pval_key.replace('pval', 'pcc')
             tmp2 = globals()[current_pcc_key]
@@ -416,14 +238,6 @@ for chrom in CHR_LIST:
     
     globals()[f'{type_}_{chrom}_num_sig_pval_df'].to_csv(os.path.join(save_dir, pval_fname))
     print(os.path.join(save_dir, pval_fname))
-
-
-# ---
-
-# ## Normal-Normal tissue specificity 비교
-
-# In[26]:
-
 
 type_full = 'Normal'
 type_ = 'N'
@@ -441,16 +255,13 @@ for i in range(len(NORMAL7_N_COHORT)):
     for j in range(i, len(NORMAL7_N_COHORT)):
 
         probe_cohort = NORMAL7_N_COHORT[j]
-        #print(f"---\nProbe: {probe_cohort}")
 
         probe_key = probe_cohort.split('-')[1]
 
         for chrom in CHR_LIST:
-            #print(f"\n{chrom}")
             target_bins = np.load(f'/data/project/3dith/data/bdm_bins/{cpg_type}/{target_cohort}_diffmat_bins.npz')[f'{chrom}_bins']
             probe_bins = np.load(f'/data/project/3dith/data/bdm_bins/{cpg_type}/{probe_cohort}_diffmat_bins.npz')[f'{chrom}_bins']
 
-            #initialize
             globals()[f'{type_full}_{target_key}_{probe_key}_{chrom}_pcc'] = []
             globals()[f'{type_full}_{target_key}_{probe_key}_{chrom}_pval'] = []
 
@@ -487,17 +298,9 @@ for i in range(len(NORMAL7_N_COHORT)):
                     if current_pval_key not in pval_key:
                         pval_key.append(current_pval_key)
 
-
-# In[27]:
-
-
 print(f'num_cohorts for {type_full}-{type_full} comparison: {len(NORMAL7_N_COHORT)}')
 print(f'num_all_pcc: {len(pcc_key)}')
 print(f'num_all_pval: {len(pval_key)}')
-
-
-# In[28]:
-
 
 assert type_full == 'Normal'
 globals()[f'{type_full}_pcc_all'] = {}
@@ -510,10 +313,6 @@ for y in pval_key:
 print(f"num_total_pcc ({type_full}): {len(globals()[f'{type_full}_pcc_all'])}")
 print(f"num_total_pval ({type_full}): {len(globals()[f'{type_full}_pval_all'])}")
 
-
-# In[30]:
-
-
 assert type_full == 'Normal'
 np.savez(os.path.join(save_dir, f'all_{cpg_type}_{type_full}_pcc'), **globals()[f'{type_full}_pcc_all'])
 np.savez(os.path.join(save_dir, f'all_{cpg_type}_{type_full}_pval'), **globals()[f'{type_full}_pval_all'])
@@ -521,11 +320,6 @@ np.savez(os.path.join(save_dir, f'all_{cpg_type}_{type_full}_pval'), **globals()
 print(os.path.join(save_dir, f'all_{cpg_type}_{type_full}_pcc.npz'))
 print(os.path.join(save_dir, f'all_{cpg_type}_{type_full}_pval.npz'))
 
-
-# In[31]:
-
-
-# 각 chromosome 별 pcc key들을 모으기. 
 assert type_full == 'Normal'
 
 for chrom in CHR_LIST:
@@ -538,19 +332,11 @@ for chrom in CHR_LIST:
         if chrom+'_' in y:
             globals()[f'{type_full}_{chrom}_pval_key'].append(y)
 
-
-# In[32]:
-
-
-#type_ = 'T'
-#type_full = 'Tumor'
-
 assert type_full == 'Normal'
 type_ = type_full[0]
 
 indices = [x.split('-')[1] for x in NORMAL7_N_COHORT]
 for chrom in CHR_LIST:
-#for chrom in CHR_LIST[:1]:
     globals()[f'{type_}_{chrom}_pcc_df'] = pd.DataFrame(index = indices, columns = indices)
     globals()[f'{type_}_{chrom}_num_sig_pval_df'] = pd.DataFrame(index = indices, columns = indices)
     
@@ -564,7 +350,6 @@ for chrom in CHR_LIST:
                 current_pval_key = f'{type_full}_{probe}_{target}_{chrom}_pval'
             tmp = globals()[current_pval_key]
             pval_mask = [x <= 5e-2 for x in tmp]
-            #print(target, probe, np.array(pval_mask).sum())
 
             current_pcc_key = current_pval_key.replace('pval', 'pcc')
             tmp2 = globals()[current_pcc_key]
@@ -586,59 +371,12 @@ for chrom in CHR_LIST:
     globals()[f'{type_}_{chrom}_num_sig_pval_df'].to_csv(os.path.join(save_dir, pval_fname))
     print(os.path.join(save_dir, pval_fname))
 
-
-# ## plot all results
-
-# In[11]:
-
-
 tissue_specificity_dir = f'/data/project/3dith/pipelines/{cpg_type}-pipeline/2_downstream-{cpg_type}/result/tissue-specificity-bdm'
-
-
-# In[12]:
-
 
 T_pcc_files = glob.glob(os.path.join(tissue_specificity_dir, f'T_*_pcc_df.csv'))
 N_pcc_files = glob.glob(os.path.join(tissue_specificity_dir, f'N_*_pcc_df.csv'))
 print(len(T_pcc_files))
 print(len(N_pcc_files))
-
-
-# In[13]:
-
-
-chrom = 'chr1'
-#glob.glob(os.path.join(tissue_specificity_dir, f'T*{chrom}_pcc_df.csv'))
-
-
-# In[31]:
-
-
-#save_dir
-
-
-# In[32]:
-
-
-#cpg_type
-
-
-# In[33]:
-
-
-#type_full
-
-
-# In[38]:
-
-
-
-
-
-# ## Tumor
-
-# In[34]:
-
 
 type_full = 'Tumor'
 fig = plt.figure(figsize = (3*6, 3*4))
@@ -653,43 +391,17 @@ for i in range(len(CHR_LIST)):
     fname = fnames[0]
     df = pd.read_csv(fname, index_col = 0)
     cohorts = np.array([x for x in df.index.values])
-    
-    '''
-    ax.matshow(df)
-    ax.set_title(chrom)
-    #for direction in ['top', 'right', 'left', 'bottom']:
-        #ax.axes.xaxis.set_visible(False)
-        #ax.axes.yaxis.set_visible(False)
-    #ax.set_xticks(df.index.values)
-    #ax.set_yticks(df.columns)
-    
-    ax.set_xticks(np.arange(14))
-    ax.set_yticks(np.arange(14))
-    '''
-    
+      
     ax = sns.heatmap(df, cmap = 'Reds')
     ax.set_title(chrom, fontsize = 13)
     
     mins.append(df.min().min())
-    maxs.append(df.max().max())#print(df.min().min(), df.max().max())
+    maxs.append(df.max().max())
 
 fig.tight_layout()
 fig_name = f'{cpg_type}_{type_full}_heatmaps.png'
 plt.savefig(os.path.join(save_dir, fig_name))
 print(os.path.join(save_dir, fig_name))
-
-
-# In[35]:
-
-
-#print(np.min(mins))
-#print(np.max(maxs))
-
-
-# ## Normal
-
-# In[36]:
-
 
 type_full = 'Normal'
 fig = plt.figure(figsize = (3*6, 3*4))
@@ -705,52 +417,13 @@ for i in range(len(CHR_LIST)):
     df = pd.read_csv(fname, index_col = 0)
     cohorts = np.array([x for x in df.index.values])
     
-    '''
-    ax.matshow(df)
-    ax.set_title(chrom)
-    #for direction in ['top', 'right', 'left', 'bottom']:
-        #ax.axes.xaxis.set_visible(False)
-        #ax.axes.yaxis.set_visible(False)
-    #ax.set_xticks(df.index.values)
-    #ax.set_yticks(df.columns)
-    
-    ax.set_xticks(np.arange(14))
-    ax.set_yticks(np.arange(14))
-    '''
-    
     ax = sns.heatmap(df, cmap = 'Reds')
     ax.set_title(chrom, fontsize = 13)
     
     mins.append(df.min().min())
-    maxs.append(df.max().max())#print(df.min().min(), df.max().max())
+    maxs.append(df.max().max())
 
 fig.tight_layout()
 fig_name = f'{cpg_type}_{type_full}_heatmaps.png'
 plt.savefig(os.path.join(save_dir, fig_name))
 print(os.path.join(save_dir, fig_name))
-
-
-# In[37]:
-
-
-#print(np.min(mins))
-#print(np.max(maxs))
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
