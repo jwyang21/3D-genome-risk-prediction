@@ -43,3 +43,5 @@ if __name__=='__main__':
                 f.write('\n\n')
         f.close()
         print("command file: {}".format(command_full_name))
+    else:
+        pass
