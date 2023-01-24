@@ -19,7 +19,6 @@ CHR_LIST = ['chr'+str(i) for i in np.arange(1, 23)]
 
 def parse_arguments():
     args = argparse.ArgumentParser()
-    
     args.add_argument('-w_dir', '--working_dir', help = 'working directory', type = str, required = True)
     args.add_argument('-c', '--cohort', help = 'TCGA cohort', type = str, required = True)
     args.add_argument('--score_fname', help = 'stem-closeness score file name, based on opensea K-M result', type = str, default = '/data/project/3dith/data/cohort-1-best-score-km.csv', required = True)
