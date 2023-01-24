@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[93]:
-
-
 import pandas as pd
 import numpy as np
 import os
@@ -18,15 +12,7 @@ mpl.rcParams['figure.dpi'] = 300
 plt.rc('font', family='FreeSans', size=7)
 plt.rc('figure', figsize=(1.5, 1.5))
 
-
-# ## cancer hi-c (3div) 데이터로 만든 corr.mat에서 뽑은 PC1과 450K IEBDM에서 뽑은 PC1을 비교.
-# - 450K PC1으로 cancer hi-c PC1이 재현이 잘 돼야 좋음.
 CHR_LIST = [f'chr{i}' for i in range(1, 23)]
-#matching_df = pd.read_csv('/data/project/3dith/data/etc/3div-cancer_hic-tcga-matching.csv', index_col = 0)
-#hic_corrmat_dir = '/data/project/3dith/data/hic_corrmat'
-#hg19_len_fname = '/data/project/jeewon/research/reference/hg19.fa.sizes'
-#binsize = int(1e6)
-
 
 def parse_arguments():
     args = argparse.ArgumentParser()
@@ -40,13 +26,9 @@ def parse_arguments():
     return args.parse_args()
 
 def pc1(m):
-    #print("pc1(m)")
     pca = PCA(n_components=3)
     pc = pca.fit_transform(m)
-    #print(pc)
     pc1 = pc[:,0]
-    #print(pc1)
-    #print('-----')
     return pc1
 
 def smoothen(v, window):
@@ -57,7 +39,6 @@ def standardize(v):
 
 if __name__=='__main__':
     args = parse_arguments()
-    #matching_df = pd.read_csv(args.matching_df_fname, index_col = 0)
     matching_df = pd.read_csv(args.matching_df_fname, index_col = 0).loc[args.cohort].copy()
     bdm_bins_dir = f'/data/project/3dith/data/bdm_bins/{args.cpg_type}'#/{cohort}_diffmat_bins.npz. #item: chr{i}_bins
     hg19_len = pd.read_csv(args.hg19_len_fname, sep = '\t', index_col = 0, header = None)
@@ -69,14 +50,11 @@ if __name__=='__main__':
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
 
-    for chrom in CHR_LIST:#real
-    #for chrom in CHR_LIST[:1]:#debug
+    for chrom in CHR_LIST:
         print(f"===\n{chrom}")
-        for i in range(matching_df.shape[0]):#real
-        #for i in range(1):#debug
+        for i in range(matching_df.shape[0]):
             cohort = matching_df.index.values[i]
-            #cohort_result_dir = os.path.join(result_dir, cohort)
-            cohort_result_dir = os.path.join(result_dir, cohort+'_'+str(i+1))#한 cohort를 여러번 돌릴때.
+            cohort_result_dir = os.path.join(result_dir, cohort+'_'+str(i+1))
             if not os.path.exists(cohort_result_dir):
                 os.makedirs(cohort_result_dir)
 
@@ -90,10 +68,6 @@ if __name__=='__main__':
             globals()[f'{current_key}_repr'] = {}
             globals()[f'{current_key}_repr']['pcc'] = []
             globals()[f'{current_key}_repr']['pval'] = []
-
-            #globals()[f'{current_key}_all'] = {}
-            #globals()[f'{current_key}_all']['pcc'] = []
-            #globals()[f'{current_key}_all']['pval'] = []
             
             tissue = matching_df.tissue.values[i]
             print(f"---\n{cohort}, {tissue}")
@@ -106,7 +80,6 @@ if __name__=='__main__':
             bdm_bin_mask = np.array([x in cohort_bdm_chrom_bin for x in n_total_chrom_bin_names])
 
             if args.cohort == 'PCBC':
-                # tissue 이름이 stemcell로 저장되어 있음. 
                 hic_corrmat_fname = os.path.join(args.hic_corrmat_dir, f'stemcell{str(i+1)}.hg19_1mb.{chrom}.corrmat.npy')
             else:
                 hic_corrmat_fname = os.path.join(args.hic_corrmat_dir, f'{tissue}.hg19_1mb.{chrom}.corrmat.npy')
@@ -123,8 +96,6 @@ if __name__=='__main__':
             repr_450k_pc1_dir = f'/data/project/3dith/pipelines/{args.cpg_type}-pipeline/2_downstream-{args.cpg_type}/result/repr_vectors-{args.matrix_type}/{cohort}'
             
             repr_S_vector_pc1_fnames = glob.glob(os.path.join(repr_450k_pc1_dir, f'repr_S_vector_{chrom}_*.npy')) 
-                #이 안에는 (각 repr vector를 정의하는 데 필요한 샘플 수, number of bdm bins in this chromosome of this cohort) shape의 행렬이 있음.
-                #column mean해서 쓰기.
                 
             repr_samples = []
             for j in range(len(repr_S_vector_pc1_fnames)):
@@ -132,24 +103,21 @@ if __name__=='__main__':
                 repr_samples.append(os.path.basename(current_fname).split('.np')[0])
                 print(current_fname)
                 repr_S_pc1_10_vectors = np.load(current_fname)
-                repr_S_pc1 = np.load(current_fname).mean(axis = 0) #column mean
+                repr_S_pc1 = np.load(current_fname).mean(axis = 0) 
                 assert len(hic_corrmat_pc1) == len(repr_S_pc1)
-                #print(pearsonr(hic_corrmat_pc1, repr_T_pc1))
-
+                
                 repr_S_pc1 = standardize(repr_S_pc1)
                 pcc = pearsonr(hic_corrmat_pc1, repr_S_pc1)[0]
                 pval = pearsonr(hic_corrmat_pc1, repr_S_pc1)[1]
                 globals()[f'{current_key}_repr']['pcc'].append(pcc)
                 globals()[f'{current_key}_repr']['pval'].append(pval)
 
-                #fig = plt.figure(figsize = (6, 0.75))
                 fig = plt.figure(figsize = (8, 1.75))
                 ax = fig.add_subplot(111)
                 ax.axhline(0, lw=0.75, ls='--', c='0.8')
                 y1 = hic_corrmat_pc1.copy()
                 ax.plot(smoothen(y1, window=3), lw=1, c='0.5', label='Hi-C ({})'.format(tissue))
                 y2 = repr_S_pc1.copy()
-                #ax.plot(smoothen(y2, window=3), lw=1, c='C3', label='Single-sample estimations ({}, averaged)'.format(cohort))
                 
                 ax.plot(smoothen(y2, window=3), lw=1, c='C3', label='Single-sample estimations ({}, 450K, averaged)'.format(cohort))
                 
@@ -157,10 +125,6 @@ if __name__=='__main__':
                     y3 = repr_S_pc1_10_vectors[k].copy()
                     y3 = standardize(y3)
                     ax.plot(smoothen(y3, window=3), c='C3', lw=0.75, alpha=0.2)
-                    #pcc = pearsonr(hic_corrmat_pc1, y3)[0]
-                    #pval = pearsonr(hic_corrmat_pc1, y3)[1]
-                    #globals()[f'{current_key}_all']['pcc'].append(pcc)
-                    #globals()[f'{current_key}_all']['pval'].append(pval)
 
                 for direction in ['top', 'right', 'bottom']:
                     ax.spines[direction].set_visible(False)
@@ -183,16 +147,8 @@ if __name__=='__main__':
                 fig.tight_layout()
                 plt.savefig(os.path.join(cohort_result_dir, fig_basename), dpi = 300)
                 plt.clf()
-                #print(os.path.join(cohort_result_dir, fig_basename))
 
             current_result_repr = pd.DataFrame.from_dict(globals()[f'{current_key}_repr'])
             current_result_repr.index = repr_samples
             current_result_repr.to_csv(os.path.join(cohort_result_dir, f'{chrom}_repr_standardized.csv'), index = True)
             print(os.path.join(cohort_result_dir, f'{chrom}_repr.csv'))
-            
-            
-            #current_result_all = pd.DataFrame.from_dict(globals()[f'{current_key}_all'])
-            #current_result_all.to_csv(os.path.join(cohort_result_dir, f'{chrom}_all_standardized.csv'), index = False)
-            #print(os.path.join(cohort_result_dir, f'{chrom}_all.csv'))
-
-
