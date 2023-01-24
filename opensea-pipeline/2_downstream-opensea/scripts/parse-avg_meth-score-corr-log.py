@@ -12,7 +12,7 @@ def parse_arguments():
 
 if __name__=='__main__':
     args = parse_arguments()
-    log = os.path.join('/data/project/3dith/pipelines/', args.cpg_type+'-pipeline', '2_downstream-'+args.cpg_type, 'log', '2_pcc-avg_beta-stem_closeness-ALL.log')
+    log = os.path.join('/data/project/3dith/pipelines/', args.cpg_type+'-pipeline', '2_downstream-'+args.cpg_type, 'log', 'pcc-avg_beta-stem_closeness-ALL.log')
     working_dir = os.path.join('/data/project/3dith/pipelines/', args.cpg_type+'-pipeline', '2_downstream-'+args.cpg_type)
     result_dir = os.path.join('/data/project/3dith/pipelines/', args.cpg_type+'-pipeline', '2_downstream-'+args.cpg_type, 'result')
     
