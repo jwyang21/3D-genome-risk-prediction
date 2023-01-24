@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[27]:
-
-
 import pandas as pd
 import numpy as np
 import os
@@ -11,17 +5,9 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import argparse
 
-
-# In[2]:
-
-
 mpl.rcParams['figure.dpi'] = 150
 plt.rc('font', family='FreeSans', size=7)
 plt.rc('figure', figsize=(1.5, 1.5))
-
-
-# In[ ]:
-
 
 def parse_arguments():
     args = argparse.ArgumentParser()
@@ -30,10 +16,6 @@ def parse_arguments():
     args.add_argument('--chromatin_states', help = 'chromatin state fname', type = str, default = '/data/project/3dith/data/chromatin_states.npy', required = False)
     args.add_argument('--input_fname', help = 'input filename', type = str, default = 'DMR_EPI_features_threshold_mean_std_len.npz', required = True)
     return args.parse_args()
-
-
-# In[ ]:
-
 
 if __name__=='__main__':
     args = parse_arguments()
@@ -53,7 +35,6 @@ if __name__=='__main__':
         for k in list(data.keys()):
             for s in chromatin_states:
                 if s in k:
-                    #print(data[k])
                     all_df.loc[cohort][s] += data[k]
                     
     all_df_proportion = pd.DataFrame(np.zeros((len(cohort2eid.cohort.values), len(chromatin_states)), dtype = float), index = cohort2eid.cohort.values, columns = chromatin_states)
@@ -66,4 +47,3 @@ if __name__=='__main__':
     
     all_df_proportion.to_csv(os.path.join(save_dir, save_fname_p))
     print(os.path.join(save_dir, save_fname_p))    
-
