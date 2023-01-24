@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import pandas as pd
 import numpy as np
 import os
@@ -18,13 +12,8 @@ mpl.rcParams['figure.dpi'] = 300
 plt.rc('font', family='FreeSans', size=7)
 plt.rc('figure', figsize=(1.5, 1.5))
 
-# ## Normal hi-c (FIRE, 3DIV) 데이터로 만든 corr.mat에서 뽑은 PC1과 450K IEBDM에서 뽑은 PC1을 비교.
-# - 450K PC1으로 normal hi-c PC1이 재현이 잘 돼야 좋음.
-
 CHR_LIST = [f'chr{i}' for i in range(1, 23)]
-
 normal7_cohort = 'TCGA-BLCA TCGA-LUAD TCGA-PRAD TCGA-KIRC TCGA-ESCA TCGA-UCEC TCGA-KIRP TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-CHOL TCGA-PAAD TCGA-BRCA TCGA-COAD'.split(' ')
-
 
 def parse_arguments():
     args = argparse.ArgumentParser()
@@ -38,13 +27,9 @@ def parse_arguments():
 
 
 def pc1(m):
-    #print("pc1(m)")
     pca = PCA(n_components=3)
     pc = pca.fit_transform(m)
-    #print(pc)
     pc1 = pc[:,0]
-    #print(pc1)
-    #print('-----')
     return pc1
 
 def smoothen(v, window):
@@ -57,7 +42,7 @@ if __name__ == '__main__':
     args = parse_arguments()
     tcga_fire_cohort = pd.read_csv(args.tcga_fire_cohort_fname, index_col = 0)
     fire_normal7_cohort = np.intersect1d(tcga_fire_cohort.index.values, normal7_cohort)
-    bdm_bins_dir = f'/data/project/3dith/data/bdm_bins/{args.cpg_type}'#/{cohort}_diffmat_bins.npz. #item: chr{i}_bins
+    bdm_bins_dir = f'/data/project/3dith/data/bdm_bins/{args.cpg_type}'
     hg19_len = pd.read_csv(args.hg19_len_fname, sep = '\t', index_col = 0, header = None)
     hg19_len.columns = ['len']
     result_dir = f'/data/project/3dith/pipelines/{args.cpg_type}-pipeline/2_downstream-{args.cpg_type}/result/compare-hic-450k-pc1-{args.matrix_type}/normal-individual/fire'
@@ -71,12 +56,10 @@ if __name__ == '__main__':
     fire_pc1.index = fire_indices
 
 
-    for chrom in CHR_LIST:#real
-    #for chrom in CHR_LIST[:1]:#debug
+    for chrom in CHR_LIST:
         print(f"===\n{chrom}")
 
-        for i in range(len(fire_normal7_cohort)):#real
-        #for i in range(1):#debug
+        for i in range(len(fire_normal7_cohort)):
             cohort = fire_normal7_cohort[i]
 
             cohort_FIRE_key = tcga_fire_cohort.loc[cohort]['FIRE']
@@ -85,7 +68,6 @@ if __name__ == '__main__':
             if not os.path.exists(cohort_result_dir):
                 os.makedirs(cohort_result_dir)
 
-            # 현재 결과를 저장할 key. 
             current_key = cohort.split('-')[1]+'_'+chrom
 
             globals()[f'{current_key}_all'] = {}
@@ -99,28 +81,20 @@ if __name__ == '__main__':
             cohort_bdm_bin = np.load(cohort_bdm_bin_fname)
             cohort_bdm_chrom_bin = cohort_bdm_bin[f'{chrom}_bins']
 
-            #tmp: fire data
             tmp = fire_pc1[['chr',cohort_FIRE_key]]
             tmp = tmp[tmp['chr'] == int(chrom.split('chr')[-1])].copy()
             tmp = tmp.dropna()
             tmp.drop(['chr'], axis = 1, inplace = True)
 
             fire_tcga_intersecting_bins = np.intersect1d(tmp.index.values, cohort_bdm_chrom_bin)
-
-            # 450k pc1 중에 fire_tcga_intersecting_bins와 일치하는 것만 남겨야 함. 
+ 
             hic_corrmat_pc1 = tmp.loc[fire_tcga_intersecting_bins][cohort_FIRE_key].values.flatten()
             hic_corrmat_pc1 = hic_corrmat_pc1 * (-1)
             hic_corrmat_pc1 = standardize(hic_corrmat_pc1)
 
-            #repr_450k_pc1_dir = f'/data/project/3dith/pipelines/{args.cpg_type}-pipeline/2_downstream-{args.cpg_type}/result/repr_vectors/{cohort}'
-            #repr_vector_pc1_fnames = glob.glob(os.path.join(repr_450k_pc1_dir, f'repr_N_vector_{chrom}_*.npy')) 
-                #이 안에는 (각 repr vector를 정의하는 데 필요한 샘플 수, number of bdm bins in this chromosome of this cohort) shape의 행렬이 있음.
-                #column mean해서 쓰기.
-
             individual_450k_pc1_dir = f'/data/project/3dith/pipelines/{args.cpg_type}-pipeline/1_compute-score-{args.cpg_type}/result/{cohort}/pc1'
             
-            if args.matrix_type == 'bdm':
-                # bdm ver.                
+            if args.matrix_type == 'bdm':               
                 all_npzs = glob.glob(os.path.join(individual_450k_pc1_dir, f'*.npz')) 
                 individual_pc1_fnames = []
                 for i in range(len(all_npzs)):
@@ -160,24 +134,19 @@ if __name__ == '__main__':
                 
                 individual_N_pc1_all = np.load(current_fname)
                 chrom_key = f'{chrom}_pc1'
-                
-                # 전체 22개 chromosome의 데이터 중 현재 chormosome의 데이터만 추출
+
                 tmp = individual_N_pc1_all[chrom_key]
                 tmp_df = pd.DataFrame(tmp)
-                
-                # 현재 chormosome의 모든 bin들 중, fire 데이터와 겹치는 bin만 추출.
+
                 tmp_df.index = cohort_bdm_chrom_bin
                 tmp = tmp_df.loc[fire_tcga_intersecting_bins].values.flatten()
                 individual_N_pc1 = standardize(tmp)
-                
-                # pcc 계산
+
                 pcc = pearsonr(hic_corrmat_pc1, individual_N_pc1)[0]
                 pval = pearsonr(hic_corrmat_pc1, individual_N_pc1)[1]
                 globals()[f'{current_key}_all']['pcc'].append(pcc)
                 globals()[f'{current_key}_all']['pval'].append(pval)
-                
-                #fig = plt.figure(figsize = (6, 0.75))
-                #fig = plt.figure(figsize = (6, 1.75))
+
                 fig = plt.figure(figsize = (8, 1.75))
                 ax = fig.add_subplot(111)
                 ax.axhline(0, lw=0.75, ls='--', c='0.8')
