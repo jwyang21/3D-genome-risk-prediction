@@ -10,21 +10,10 @@ CPG_TYPE='opensea'
 def parse_arguments():
     args = argparse.ArgumentParser()
     args.add_argument('-w_dir', '--working_dir', help = 'working_dir', type = str, required = True)
-    #default: /data/project/3dith/pipelines/{CPG_TYPE}-pipeline/1_compute-score-{CPG_TYPE}
-
     args.add_argument('--score_dir', help = 'directory where scores are saved in', type = str, required = True)
-    #default: /data/project/3dith/pipelines/{CPG_TYPE}-pipeline/1_compute-score-{CPG_TYPE}/result#/{cohort}
-
     args.add_argument('--result_dir', help = 'directory to save resulting files', type = str, required = True)
-    #default: /data/project/3dith/pipelines/{CPG_TYPE}-pipeline/1_compute-score-{CPG_TYPE}/result#/{cohort}
-
-    args.add_argument('--usage_option', help = 'use all samples or randomly picked samples when computing reference.', type = str, default = 'part', required = True) # all, part
-    #default: part
-
+    args.add_argument('--usage_option', help = 'use all samples or randomly picked samples when computing reference.', type = str, default = 'part', required = True) 
     args.add_argument('--manifest_fname', help = 'manifest file name', type = str, required = True)
-    # default: /data/project/3dith/data/manifest_normal7.csv
-
-    
     return args.parse_args()
 
 def compute_min_max_score(result_dir, score_fname, save_full_fname, all_cohorts):
@@ -46,7 +35,6 @@ if __name__=='__main__':
     
     distances = ['normal-distance', 'stem-distance']
     metrics = ['euclidean', 'cosine-sim']
-    #score_types = ['pc1-avg', 'pc1-fluctuation']
     distance_avgs = ['simple-avg', 'weighted-avg']
     matrix_types = ['iebdm', 'bdm']
     standardize_options = ['_standardized', '']
@@ -67,5 +55,5 @@ if __name__=='__main__':
                             save_full_fname = os.path.join(args.result_dir, save_fname)
                             if distance=='normal-distance':
                                 compute_min_max_score(args.result_dir, score_fname, save_full_fname, NORMAL7_COHORT)    
-                            else: #stem-distance
+                            else: 
                                 compute_min_max_score(args.result_dir, score_fname, save_full_fname, NORMAL7_COHORT_PCBC)
