@@ -10,8 +10,8 @@ if __name__ == '__main__':
     all_samples = {}
     for cohort in ALL_TCGA_PCBC:
         if 'TCGA' in cohort:
-            cohort_dir = os.path.join('/data/project/3dith/data/450k_bdgs_v2/', cohort+'-opensea')#island, shelf, shore, shelf_shore 중 뭘 쓰든 상관x
-        else: #PCBC
+            cohort_dir = os.path.join('/data/project/3dith/data/450k_bdgs_v2/', cohort+'-opensea')
+        else: 
             cohort_dir = '/data/project/3dith/data/pcbc/bdgs_opensea'
         
         all_samples[cohort] = []
@@ -23,6 +23,6 @@ if __name__ == '__main__':
             else:
                 pass
     
-    result_fname = '/data/project/3dith/data/samplenames'#npz
+    result_fname = '/data/project/3dith/data/samplenames'
     np.savez(result_fname, **all_samples)
     print("result file: {}.npz".format(result_fname))
