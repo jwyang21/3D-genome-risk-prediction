@@ -7,7 +7,6 @@ import argparse
 survival_types = ['OS', 'DSS', 'DFI', 'PFI']
 clinical_file = '/data/project/3dith/data/TCGA-CDR-SupplementalTableS1.csv'
 
-# command: python3 5_write-cox-commands.py --cpg_type {cpg_type} --cox_version $i --command_fname 6_cox-commands --score_fname /data/project/3dith/data/cohort-1-best-score-km.csv
 def parse_arguments():
     args = argparse.ArgumentParser()
     args.add_argument('--cpg_type', type = str, required = True)
@@ -18,11 +17,8 @@ def parse_arguments():
 
 if __name__=='__main__':
     args = parse_arguments()
-    #scores_fname = f'/data/project/3dith/pipelines/{args.cpg_type}-pipeline/2_downstream-{args.cpg_type}/result/cohort-1-best-score-km.csv'
     scores = pd.read_csv(args.score_fname, index_col = 0)
-        
     command_dir = f'/data/project/3dith/pipelines/{args.cpg_type}-pipeline/2_downstream-{args.cpg_type}/scripts'
-    
     command_full_name = f'{command_dir}/{args.command_fname}_v{args.cox_version}.sh'
     if not os.path.exists(command_dir):
         os.makedirs(command_dir)
@@ -31,7 +27,6 @@ if __name__=='__main__':
         
     if args.cox_version == '5':
         for i in range(scores.shape[0]):
-        #for i in range(1):
             cohort = scores.index.values[i]            
             score_group_file = f'/data/project/3dith/pipelines/{args.cpg_type}-pipeline/2_downstream-{args.cpg_type}/result/{cohort}/sc-group.csv'
             avg_beta_file = f'/data/project/3dith/pipelines/{args.cpg_type}-pipeline/2_downstream-{args.cpg_type}/result/{cohort}/{args.cpg_type}_tumors_avg_beta.csv'
