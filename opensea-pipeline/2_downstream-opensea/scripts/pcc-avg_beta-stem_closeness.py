@@ -154,4 +154,4 @@ if __name__=='__main__':
         figure_data.to_csv(os.path.join(cohort_dir, 'scatter-avg_beta-stem_closeness-TUMOR_samples.csv'))
         print(os.path.join(cohort_dir, 'scatter-avg_beta-stem_closeness-TUMOR_samples.csv'))
 
-        plt.clf
+        plt.clf()
