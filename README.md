@@ -39,7 +39,7 @@ python ab2corrmat.py
 bash copy_corrmat.sh
 cd ../
 ```
-#### 3-2-2. Processing PC1 values computed from Hi-C data of normal tissues ([2])
+#### 3-1-2. Processing PC1 values computed from Hi-C data of normal tissues ([2])
 - For this case, PC1 values derived from Hi-C data of normal tissues are provided by the supplementary information. 
 ```shell
 cd data
