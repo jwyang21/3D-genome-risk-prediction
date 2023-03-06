@@ -28,7 +28,7 @@ NORMAL_BARCODES = ['10', '11', '12', '13','14', '15', '16', '17', '18', '19']
 CHR_LENGTH = pd.read_csv('/data/project/jeewon/research/reference/GRCh37_hg19_chr_length.csv')[['Chromosome', 'Total_length']]
 CHR_LENGTH.columns = ['chrom', 'len'] #current_chrom_len = int(CHR_LENGTH[CHR_LENGTH['chrom']=='chr1'].len.values[0])
 
-CPG_ANNOT = pd.read_csv('/data/project/jeewon/research/3D-ITH/data/illumina/humanmethylation450_15017482_v1-2.csv', skiprows = [0,1,2,3,4,5,6], index_col=0)
+CPG_ANNOT = pd.read_csv('/data/project/3dith/data/illumina/humanmethylation450_15017482_v1-2.csv', skiprows = [0,1,2,3,4,5,6], index_col=0)
 CPG_METADATA = pd.read_csv('/data/project/3dith/data/450k_metadata.open_sea.sorted.bed', header=None, sep = '\t') # columns = ['chrom', 'start', 'end', 'cpg'] # use this!!
 
 TCGA_PC1_DIR = '/data/project/jeewon/research/3D-ITH/pipelines/all-samples-pc1/result/' #/{cohort}/{sample}.npz or /{cohort}/{sample}_inv_exp.npz  #'chr1'
