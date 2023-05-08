@@ -8,7 +8,7 @@ The figures below describe a more detailed overview of this pipeline.
 #### 1-2-1. Qualitative overview
 ![main fig1  230424_fig1-300dpi](https://user-images.githubusercontent.com/86412887/236715096-3a22e8d1-6d32-4bab-ae55-d401da73d2b9.png)
 #### 1-2-2. Quantitative overview
-![30119_figurex_stem-closeness-computation-explanation-BDM-300dpi](https://user-images.githubusercontent.com/86412887/213362375-203bb05a-5253-49bb-b39e-53bd4b8c645f.png)
+![230423-FigS2-stem-closeness-explanation-300dpi](https://user-images.githubusercontent.com/86412887/236715225-0e5239c7-a5e6-4990-87e2-53ab1bde38c2.png)
 ## 2. Installation       
 There are two environments needed: one for processing Hi-C data, and the other for computing stem closeness and running downstream analyses.     
 ### 2-1. Installing conda environment processing Hi-C data
