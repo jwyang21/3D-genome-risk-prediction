@@ -51,40 +51,11 @@ cd data
 python3 download_FIRE_PC1.py 
 cd ../
 ```
-### 3-2. Extracting 3D genome-aware epigenetic features and investigating characteristics of BDM
+### 3-2. Extracting 3D genome-aware epigenetic features from BDM
 ```shell
 conda activate stem-closeness
 ```
-<!--
-#### 3-2-1. Preprocessing data
-- Download TCGA DNA methylation data from UCSC Xena ([3])
-```shell
-cd data/450k_xena
-snakemake -j 10
-cd ../../
-```
-- Construct metadata and bedgraph file of open sea CpG probes in 450K DNA methylation data
-  - Download manifest file for Infinium HumanMethylation450 v1.2 BeadChip, provided by Illumina ([4]) 
-```shell
-cd data
-wget https://webdata.illumina.com/downloads/productfiles/humanmethylation450/humanmethylation450_15017482_v1-2.csv
-cd ../
-```                            
 
-  - Make metadata and bedgraph files
-```shell
-cd utils
-bash make-450k-probe-metadata.sh
-bash make-450k-probe-bedgraph.sh
-cd ../
-```
-- Construct list of sample names per cohort
-```shell
-cd utils/scripts
-python3 0_get_sample_name_list.py
-cd ../../
-```
--->
 #### 3-2-1. Make binned difference matrices (BDMs)    
 ##### 3-2-1-1. Make BDMs for TCGA samples ([5]), using open sea CpG probes
 ```shell
@@ -105,7 +76,7 @@ bash 1_find-bdm-bins.sh
 cd ../../
 ```
 
-#### 3-2-2. Construct 3D genome-aware epigenetic features: BDM PC1s, stem/normal references, stem/normal distances, and stem closeness
+#### 3-2-2. Extract 3D genome-aware epigenetic features: BDM PC1s, stem/normal references, stem/normal distances, and stem closeness
 ```shell
 cd opensea-pipeline/1_compute-score-opensea/scripts
 bash 1_all-samples-pc1.sh > ../log/1_all-samples-pc1.log
@@ -118,7 +89,7 @@ bash 5_compute-sc-euclidean-raw.sh > ../log/5_compute-sc-euclidean-raw.log
 cd ../../../
 ```
 
-##### 3-2-3. Investigating the characteristics of BDM 
+### 3-3. Investigating the characteristics of BDM 
 - Make representative PC1 vectors of tumor, normal, and stem cells, respectively.
   - Representative PC1s are made by averaging PC1 vectors of 10 samples, computed from the BDM of same chromosome. 
 ```shell
@@ -156,132 +127,29 @@ bash compare-Normal-3DIV-450k-pc1-individual.sh
 ```shell
 python3 check-tissue-specificity.py
 ```
-<!--
-- Find out correlation between stem closeness and avg beta, the average DNA methylation level of open sea CpG probes.
-```shell
-bash pcc-avg_beta-stem_closeness.sh > ../log/pcc-avg_beta-stem_closeness-ALL.log
-bash parse-avg_meth-score-corr-log.sh
-cd ../../../
-```
-- Assign score group and beta group
-```shell
-cd utils/scripts
-python3 6_assign-score_group.py
-python3 7_assign-beta_group.py
-cd ../../
-```
--->
+
 - Assign score group
 ```shell
 cd utils/scripts
 python3 6_assign-score_group.py
 cd ../../
 ```
-<!--
-- Conduct log-rank test (1): use score group as predictor
-```shell
-cd opensea-pipeline/2_downstream-opensea/scripts
-bash sc-cosine_and_euclidean-minmax.sh > ../log/sc-cosine_and_euclidean-minmax.log
-bash sc-euclidean-normalized.sh > ../log/sc-euclidean-normalized.log
-bash sc-euclidean-raw.sh > ../log/sc-euclidean-raw.log
-```
-- Conduct log-rank test (2): use beta group as predictor
-```shell
-bash survival-analysis-avg_beta.sh > ../log/survival-analysis-avg_beta.log
-```
-- Write commands to run Cox regression
-```shell
-python3 write-cox-commands.py --cpg_type opensea --cox_version 5 --command_fname cox-commands --score_fname /data/project/3dith/data/cohort-1-best-score-km.csv
-```
-- Run Cox regression
-```shell
-bash cox_commands_v5.sh > ../log/cox_commands_v5.log
-```
-- Parse Cox regression results
-```shell
-bash parse_cox_results_v5.sh
-```
-- Plot Cox regression results (hazard ratios)
-```shell
-python3 plot-HR.py
-cd ../../../
-```
-##### 3-2-2-3. DMR analysis
-- Download annotation about gene and regulatory features (version: GRCh37)
-```shell
-cd data
-wget https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.chr_patch_hapl_scaff.annotation.gtf.gz
-gzip -d gencode.v19.chr_patch_hapl_scaff.annotation.gtf.gz
-wget https://ftp.ensembl.org/pub/grch37/current/regulation/homo_sapiens/homo_sapiens.GRCh37.Regulatory_Build.regulatory_features.20201218.gff.gz
-gzip -d homo_sapiens.GRCh37.Regulatory_Build.regulatory_features.20201218.gff.gz
-cd ../
-```
-- Download chromatin state data ([7])
-```shell
-cd data/roadmap_epigenomics
-bash download.sh
-cd ../../
-```
-```shell
-cd opensea-pipeline/3_dmr-opensea/scripts
-bash 0_compute_binned_avg_opensea_beta.sh > ../log/0_compute_binned_avg_opensea_beta.log
-bash 1_compute-binned-opensea-beta-TN-diff-binsize-1e6.sh > ../log/1_compute-binned-opensea-beta-TN-diff-binsize-1e6.log
-bash 2_find_DMR.sh > ../log/2_find_DMR.log
-bash 3_find_DMR_features_mean_std_epigenome.sh > ../log/3_find_DMR_features_mean_std_epigenome.log
-bash 3_find_DMR_features_mean_std_gene_reg.sh > ../log/3_find_DMR_features_mean_std_gene_reg.log
-bash 4_collate_DMR_features.sh > ../log/4_collate_DMR_features.log
-bash 5_make-cohort-threshold-feature-list-threshold-mean_std.sh > ../log/5_make-cohort-threshold-feature-list-threshold-mean_std.log
-bash 6_write_np2txt.sh > ../log/6_write_np2txt.log
-bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.log
-bash 8_compute-chromatin-state-proportion.sh > ../log/8_compute-chromatin-state-proportion.log
-cd ../../../
-```
-#### 3-2-4. Run island pipeline
-##### 3-2-4-1. DMR analysis
-```shell
-cd island-pipeline/3_dmr-island/scripts/
-bash 0_compute_binned_avg_island_beta.sh > ../log/0_compute_binned_avg_island_beta.log
-bash 1_compute-binned-island-beta-TN-diff-binsize-1e6.sh > ../log/1_compute-binned-island-beta-TN-diff-binsize-1e6.log
-bash 2_find_DMR.sh > ../log/2_find_DMR.log
-bash 3_find_DMR_features_mean_std_epigenome.sh > ../log/3_find_DMR_features_mean_std_epigenome.log
-bash 3_find_DMR_features_mean_std_gene_reg.sh > ../log/3_find_DMR_features_mean_std_gene_reg.log
-bash 4_collate_DMR_features.sh > ../log/4_collate_DMR_features.log
-bash 5_make-cohort-threshold-feature-list-threshold-mean_std.sh > ../log/5_make-cohort-threshold-feature-list-threshold-mean_std.log
-bash 6_write_np2txt.sh > ../log/6_write_np2txt.log
-bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.log
-cd ../../../
-```
-#### 3-2-5. Run shelf\_shore pipeline
-##### 3-2-5-1. DMR analysis
-```shell
-cd shelf_shore-pipeline/3_dmr-shelf_shore/scripts
-bash 0_compute_binned_avg_shelf_shore_beta.sh > ../log/0_compute_binned_avg_shelf_shore_beta.log
-bash 1_compute-binned-shelf_shore-beta-TN-diff-binsize-1e6.sh > ../log/1_compute-binned-shelf_shore-beta-TN-diff-binsize-1e6.log
-bash 2_find_DMR.sh > ../log/2_find_DMR.log
-bash 3_find_DMR_features_mean_std_epigenome.sh > ../log/3_find_DMR_features_mean_std_epigenome.log
-bash 3_find_DMR_features_mean_std_gene_reg.sh > ../log/3_find_DMR_features_mean_std_gene_reg.log
-bash 4_collate_DMR_features.sh > ../log/4_collate_DMR_features.log
-bash 5_make-cohort-threshold-feature-list-threshold-mean_std.sh > ../log/5_make-cohort-threshold-feature-list-threshold-mean_std.log
-bash 6_write_np2txt.sh > ../log/6_write_np2txt.log
-bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.log
-cd ../../../
-```
--->
-### 3-3. Survival analysis and DMR analysis
+
+### 3-4. Survival analysis
 ```shell
 conda activate survival-analysis
 ```        
-#### 3-3-1. Risk prediction using a feedforward neural network, followed by the log-rank test       
+#### 3-4-1. Risk prediction using a feedforward neural network, followed by the log-rank test       
 ```shell
 cd survival-analysis/
 bash risk_prediction.sh
 ```
-#### 3-3-2. Cox regression using the predicted risks
+#### 3-4-2. Cox regression using the predicted risks
 ```shell
 bash cox_risk.sh
 cd ../
 ```
-#### 3-3-3. DMR analysis
+### 3-5. DMR analysis
 ```shell
 cd dmr-analysis/
 bash 0_compute_binned_avg_opensea_beta.sh
