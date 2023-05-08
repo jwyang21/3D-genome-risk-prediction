@@ -9,7 +9,7 @@ The figures in section 1-2 describe a more detailed overview of the whole pipeli
 ![main fig1  230424_fig1-300dpi](https://user-images.githubusercontent.com/86412887/236715096-3a22e8d1-6d32-4bab-ae55-d401da73d2b9.png)
 #### 1-2-2. Quantitative overview
 ![230423-FigS2-stem-closeness-explanation-300dpi](https://user-images.githubusercontent.com/86412887/236715225-0e5239c7-a5e6-4990-87e2-53ab1bde38c2.png)
-## 2. Installation       
+## 2. Installation of the conda environments             
 There are three environments needed: environments for (1) processing Hi-C data, (2) extracting 3D genome-aware epigenetic features from the 450K DNA methylation data, and (3) survival analysis and DMR analysis.     
 ### 2-1. Installing conda environment processing Hi-C data
 ```shell
@@ -26,9 +26,9 @@ mamba env create --file stem-closeness.yaml
 conda install mamba -n base -c conda-forge
 mamba env create --file survival-analysis.yaml
 ```
-## 3. Process data and run experiments
+## 3. Processing data and running experiments
 
-### 3-1. Process Hi-C data 
+### 3-1. Processing Hi-C data 
 #### 3-1-1. Processing Hi-C data from 3DIV database ([1])
 - For this case, we need to process raw Hi-C data to get PC1 vectors, since PC1 values are not provided directly.
   - In case of 'stem-closeness/hic-processing/manifest.csv' in this repository, information of Hi-C data obtained from cancer cell lines are written.
@@ -56,27 +56,27 @@ cd ../
 conda activate stem-closeness
 ```
 
-#### 3-2-1. Make binned difference matrices (BDMs)    
-##### 3-2-1-1. Make BDMs for TCGA samples ([5]), using open sea CpG probes
+#### 3-2-1. Constructing binned difference matrices (BDMs)    
+##### 3-2-1-1. Constructing BDMs for TCGA samples ([5]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-v2-opensea
 snakemake -j 10
 cd ../
 ```
-##### 3-2-1-2. Make BDMs for PCBC stem cell samples ([6]), using open sea CpG probes
+##### 3-2-1-2. Constructing BDMs for PCBC stem cell samples ([6]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-pcbc
 snakemake -j 10
 cd ../
 ```
-##### 3-2-1-3. Make list of genomic bins used for constructing BDM.
+##### 3-2-1-3. Constructing list of genomic bins used for constructing BDM.
 ```shell
 cd utils/scripts
 bash 1_find-bdm-bins.sh
 cd ../../
 ```
 
-#### 3-2-2. Extract 3D genome-aware epigenetic features: BDM PC1s, stem/normal references, stem/normal distances, and stem closeness
+#### 3-2-2. Extracting 3D genome-aware epigenetic features: BDM PC1s, stem/normal references, stem/normal distances, and stem closeness
 ```shell
 cd opensea-pipeline/1_compute-score-opensea/scripts
 bash 1_all-samples-pc1.sh > ../log/1_all-samples-pc1.log
