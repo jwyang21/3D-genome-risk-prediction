@@ -9,11 +9,9 @@ import matplotlib as mpl
 from scipy.stats import pearsonr
 import argparse
 
-
 mpl.rcParams['figure.dpi'] = 150
 plt.rc('font', family='FreeSans', size=7)
 plt.rc('figure', figsize=(1.5, 1.5))
-
 
 NORMAL7_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-PRAD TCGA-KIRC TCGA-ESCA TCGA-UCEC TCGA-KIRP TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-CHOL TCGA-PAAD TCGA-BRCA TCGA-COAD'.split(' ')
 SAMPLE_NAME_FILE = '/data/project/3dith/data/samplenames.npz'
