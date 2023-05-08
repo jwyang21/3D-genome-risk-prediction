@@ -51,12 +51,12 @@ cd data
 python3 download_FIRE_PC1.py 
 cd ../
 ```
-### 3-2. Extracting 3D genome-aware epigenetic features from BDM
+### 3-2. Extracting 3D genome-aware epigenetic features from binned difference matrices (BDM)
 ```shell
 conda activate stem-closeness
 ```
 
-#### 3-2-1. Constructing binned difference matrices (BDMs)    
+#### 3-2-1. Constructing BDM  
 ##### 3-2-1-1. Constructing BDMs for TCGA samples ([5]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-v2-opensea
