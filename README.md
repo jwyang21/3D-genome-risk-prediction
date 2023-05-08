@@ -21,7 +21,7 @@ mamba env create --file hic-processing/environment.yaml
 conda install mamba -n base -c conda-forge
 mamba env create --file stem-closeness.yaml
 ```
-### 2-3. Installing conda environment for risk prediction and downstream tasks
+### 2-3. Installing conda environment for survival analysis and DMR analysis
 ```shell
 conda install mamba -n base -c conda-forge
 mamba env create --file survival-analysis.yaml
