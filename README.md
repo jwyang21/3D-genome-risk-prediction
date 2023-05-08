@@ -106,7 +106,7 @@ cd ../../
 ```
 
 #### 3-2-2. Run opensea pipeline
-##### 3-2-2-1. Compute stem closeness
+##### 3-2-2-1. Construct 3D genome-aware epigenetic features: BDM PC1s, stem/normal references, stem/normal distances, and stem closeness
 ```shell
 cd opensea-pipeline/1_compute-score-opensea/scripts
 bash 1_all-samples-pc1.sh > ../log/1_all-samples-pc1.log
