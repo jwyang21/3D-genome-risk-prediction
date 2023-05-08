@@ -1,8 +1,8 @@
-# Stem closeness
+# A deep learning-based risk prediction using 3D genome-aware epigenetic features
 ## 1. Introduction and overview
 ## 1-1. Introduction    
-Stem closeness is a novel metric to measure stem cell-likeness of a single sample.           
-The overall pipeline for computing stem closeness consists of 3 main steps: (1) inferring 3D genome structure of a single sample, using DNA methylation data only (note that inferred 3D genome state is representated as a vector), (2) computing distances between inferred 3D genome states, and (3) using combinations of distances to quantify stem closeness of each sample.          
+We propose the utilization of 3D genome-aware epigenetic features extracted from the single-sample 450K DNA methylation data.       
+The overall pipeline consists of four main steps: (1) inferring 3D genome-aware epigenetic features of a single sample, using DNA methylation data only (note that inferred 3D genome state is representated as the first principal component; PC1), (2) construction of stem/normal references by averaging the PC1s from multiple samples, (3) using combinations of distances between PC1s to quantify stem closeness of each sample, and (4) risk prediction by the feedforward neural network model, using concatenation of 3D genome-aware epigenetic features and survival-related features (age and gender) as input feature.         
 The figures below describe a more detailed overview of this pipeline.
 ### 1-2. Overview
 #### 1-2-1. Qualitative overview
@@ -10,16 +10,21 @@ The figures below describe a more detailed overview of this pipeline.
 #### 1-2-2. Quantitative overview
 ![230423-FigS2-stem-closeness-explanation-300dpi](https://user-images.githubusercontent.com/86412887/236715225-0e5239c7-a5e6-4990-87e2-53ab1bde38c2.png)
 ## 2. Installation       
-There are two environments needed: one for processing Hi-C data, and the other for computing stem closeness and running downstream analyses.     
+There are three environments needed: environments for (1) processing Hi-C data, (2) extracting 3D genome-aware epigenetic features from the 450K DNA methylation data, and (3) risk prediction by the neural network and the downstream analysis.     
 ### 2-1. Installing conda environment processing Hi-C data
 ```shell
 conda install mamba -n base -c conda-forge
 mamba env create --file hic-processing/environment.yaml
 ```
-### 2-2. Installing conda environment for running stem closeness-related analyses
+### 2-2. Installing conda environment for extracting 3D genome-aware epigenetic features
 ```shell
 conda install mamba -n base -c conda-forge
 mamba env create --file stem-closeness.yaml
+```
+### 2-3. Installing conda environment for risk prediction and downstream tasks
+```shell
+conda install mamba -n base -c conda-forge
+mamba env create --file survival-analysis.yaml
 ```
 ## 3. Process
 
@@ -46,8 +51,7 @@ cd data
 python3 download_FIRE_PC1.py 
 cd ../
 ```
-
-### 3-2. Conduct stem closeness-related analyses
+### 3-2. Extracting 3D genome-aware epigenetic features and investigating characteristics of BDM
 ```shell
 conda activate stem-closeness
 ```
@@ -113,7 +117,7 @@ bash 5_compute-sc-euclidean-raw.sh > ../log/5_compute-sc-euclidean-raw.log
 cd ../../../
 ```
 
-##### 3-2-3-2. Downstream analyses 
+##### 3-2-3-2. Investigating the characteristics of BDM 
 - Make representative PC1 vectors of tumor, normal, and stem cells, respectively.
   - Representative PC1s are made by averaging PC1 vectors of 10 samples, computed from the BDM of same chromosome. 
 ```shell
@@ -151,6 +155,7 @@ bash compare-Normal-3DIV-450k-pc1-individual.sh
 ```shell
 python3 check-tissue-specificity.py
 ```
+<!--
 - Find out correlation between stem closeness and avg beta, the average DNA methylation level of open sea CpG probes.
 ```shell
 bash pcc-avg_beta-stem_closeness.sh > ../log/pcc-avg_beta-stem_closeness-ALL.log
@@ -164,6 +169,14 @@ python3 6_assign-score_group.py
 python3 7_assign-beta_group.py
 cd ../../
 ```
+-->
+- Assign score group
+```shell
+cd utils/scripts
+python3 6_assign-score_group.py
+cd ../../
+```
+<!--
 - Conduct log-rank test (1): use score group as predictor
 ```shell
 cd opensea-pipeline/2_downstream-opensea/scripts
@@ -252,7 +265,11 @@ bash 6_write_np2txt.sh > ../log/6_write_np2txt.log
 bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.log
 cd ../../../
 ```
-
+-->
+### 3-3. A deep learning-based risk prediction and downstream tasks
+```shell
+conda activate survival-analysis
+```
 ## Reference
 [1] Kim, Kyukwang, et al. "3DIV update for 2021: a comprehensive resource of 3D genome and 3D cancer genome." Nucleic Acids Research 49.D1 (2021): D38-D46.         
 [2] Schmitt, Anthony D., et al. "A compendium of chromatin contact maps reveals spatially active regions in the human genome." Cell reports 17.8 (2016): 2042-2059.       
