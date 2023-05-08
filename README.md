@@ -10,7 +10,7 @@ The figures below describe a more detailed overview of this pipeline.
 #### 1-2-2. Quantitative overview
 ![230423-FigS2-stem-closeness-explanation-300dpi](https://user-images.githubusercontent.com/86412887/236715225-0e5239c7-a5e6-4990-87e2-53ab1bde38c2.png)
 ## 2. Installation       
-There are three environments needed: environments for (1) processing Hi-C data, (2) extracting 3D genome-aware epigenetic features from the 450K DNA methylation data, and (3) risk prediction by the neural network and the downstream analysis.     
+There are three environments needed: environments for (1) processing Hi-C data, (2) extracting 3D genome-aware epigenetic features from the 450K DNA methylation data, and (3) survival analysis and DMR analysis.     
 ### 2-1. Installing conda environment processing Hi-C data
 ```shell
 conda install mamba -n base -c conda-forge
