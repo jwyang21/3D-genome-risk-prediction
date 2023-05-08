@@ -6,7 +6,7 @@ The overall pipeline for computing stem closeness consists of 3 main steps: (1) 
 The figures below describe a more detailed overview of this pipeline.
 ### 1-2. Overview
 #### 1-2-1. Qualitative overview
-![230117_github_readme_-overview](https://user-images.githubusercontent.com/86412887/212884165-b1908130-92cb-4623-8d48-ebbde1cda9ce.png)
+![main fig1  230424_fig1-300dpi](https://user-images.githubusercontent.com/86412887/236715096-3a22e8d1-6d32-4bab-ae55-d401da73d2b9.png)
 #### 1-2-2. Quantitative overview
 ![30119_figurex_stem-closeness-computation-explanation-BDM-300dpi](https://user-images.githubusercontent.com/86412887/213362375-203bb05a-5253-49bb-b39e-53bd4b8c645f.png)
 ## 2. Installation       
