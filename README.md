@@ -127,14 +127,6 @@ bash compare-Normal-3DIV-450k-pc1-individual.sh
 ```shell
 python3 check-tissue-specificity.py
 ```
-
-- Assign score group
-```shell
-cd utils/scripts
-python3 6_assign-score_group.py
-cd ../../
-```
-
 ### 3-4. Survival analysis
 ```shell
 conda activate survival-analysis
