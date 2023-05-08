@@ -268,9 +268,34 @@ bash 7_gseapy-gene-functional-annot.sh > ../log/7_gseapy-gene-functional-annot.l
 cd ../../../
 ```
 -->
-### 3-3. A deep learning-based risk prediction and downstream tasks
+### 3-3. Survival analysis and DMR analysis
 ```shell
 conda activate survival-analysis
+```        
+#### 3-3-1. Risk prediction using a feedforward neural network, followed by the log-rank test       
+```shell
+cd survival-analysis/
+bash risk_prediction.sh
+```
+#### 3-3-2. Cox regression using the predicted risks
+```shell
+bash cox_risk.sh
+cd ../
+```
+#### 3-3-3. DMR analysis
+```shell
+cd dmr-analysis/
+bash 0_compute_binned_avg_opensea_beta.sh
+bash 1_compute-binned-opensea-beta-HL-diff.sh
+bash 2_find_DMR.sh
+bash 3_find_DMR_features_epi.sh
+bash 3_find_DMR_features_gene_reg.sh
+bash 4_collate_DMR_features.sh
+bash 5_make-cohort-threshold-feature-list.sh
+bash 6_write_np2txt.sh
+bash 7_gseapy-gene-functional-annot.sh
+bash 8_compute-chromatin-state-proportion.sh
+cd ../
 ```
 ## Reference
 [1] Kim, Kyukwang, et al. "3DIV update for 2021: a comprehensive resource of 3D genome and 3D cancer genome." Nucleic Acids Research 49.D1 (2021): D38-D46.         
