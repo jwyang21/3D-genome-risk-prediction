@@ -1,33 +1,21 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import os
 import sys
 import argparse
 
-# - DMR_GENE-ANNOT{}ALL.npy
-# - DMR_REG-ANNOT{}_ALL.npy
-# - DMR_EPI-ANNOT{}_ALL.npy
-
-# In[3]:
-
-
-# global variables
 NORMAL7_COHORT = 'TCGA-BLCA TCGA-LUAD TCGA-PRAD TCGA-KIRC TCGA-ESCA TCGA-UCEC TCGA-KIRP TCGA-THCA TCGA-HNSC TCGA-LIHC TCGA-LUSC TCGA-CHOL TCGA-PAAD TCGA-BRCA TCGA-COAD'.split(' ')
 BIG_CATEGORY = ['GENE', 'REG', 'EPI']
-#THRESHOLD = ['mean', 'mean_std', 'mean_2std'] #use mean_std only. 
 SMALL_CATEGORY_FNAME = '/data/project/3dith/data/etc/dmr-feature-small-category.npz'
 if os.path.exists(SMALL_CATEGORY_FNAME):
     SMALL_CATEGORY = np.load(SMALL_CATEGORY_FNAME, allow_pickle = True)
 else:
     SMALL_CATEGORY = {}
     SMALL_CATEGORY['GENE'] = ['gene','transcript']
-    SMALL_CATEGORY['REG'] = ['open_chromatin_region', 'TF_binding_site', 'CTCF_binding_site', 'enhancer', 'promoter',                             'promoter_flanking_region']
+    SMALL_CATEGORY['REG'] = ['open_chromatin_region', 'TF_binding_site', 'CTCF_binding_site', 'enhancer', 'promoter', 'promoter_flanking_region']
     SMALL_CATEGORY['EPI'] = ['18_Quies', '13_Het', '17_ReprPCWk', '16_ReprPC', '14_TssBiv', '2_TssFlnk',     '12_ZNF/Rpts', '11_EnhWk', '1_TssA', '6_TxWk', '5_Tx', '9_EnhA1', '7_EnhG1',     '4_TssFlnkD' ,'15_EnhBiv', '10_EnhA2', '3_TssFlnkU', '8_EnhG2']
     np.savez(SMALL_CATEGORY_FNAME,**SMALL_CATEGORY)
 cohort2eid = pd.read_csv('/data/project/3dith/data/etc/cohort2eid.txt', sep = '\t', header = None)
@@ -48,24 +36,6 @@ def parse_arguments():
     parser.add_argument('--version', help = 'feature version', type = str, required = True, default = 'v7.1')
     parser.add_argument('--lr', help = 'learning rate. 0.001, 0.0005, 0.0001', type = float, required = True, default = 0.001)
     return parser.parse_args()
-
-
-# To Do
-# - GENE features (gene, transcript): 
-#     - cohort 별로 
-#         - chromosome 별로 
-#             - 각 feature의 길이 summation
-#     - cohort 별로, 모든 feature 모아서 저장 (ENSG ID or ENST ID)
-# - REG features:
-#     - cohort 별로
-#         - chromosome 별로
-#             - 각 feature의 길이 summation
-#     - cohort 별로, 모든 feature 모아서 저장 (ENSR ID)
-# - EPI features:
-#     - cohort 별로, 각 feature의 길이 summation. 
-
-# In[5]:
-
 
 def parse_GENE(cohort_dir, gene_annot, threshold_key):
     cohort_ensg = []
@@ -89,7 +59,6 @@ def parse_GENE(cohort_dir, gene_annot, threshold_key):
                 current_feature_end = int(annot.split('-')[1].split('_')[0])
                 assert current_feature_end >= current_feature_start
                 current_feature_length = (current_feature_end - current_feature_start)
-                #current_feature_length = (current_feature_end - current_feature_start) + 1
                 current_chrom = annot.split(':')[0].strip()
                 globals()[current_chrom+'_ENSG_len'] += current_feature_length
 
@@ -103,8 +72,6 @@ def parse_GENE(cohort_dir, gene_annot, threshold_key):
                 current_feature_end = int(annot.split('-')[1].split('_')[0])
                 assert current_feature_end >= current_feature_start
                 current_feature_length = (current_feature_end - current_feature_start)
-                #current_feature_length = (current_feature_end - current_feature_start) + 1
-
                 current_chrom = annot.split(':')[0].strip()
                 globals()[current_chrom+'_ENST_len'] += current_feature_length   
         else:
@@ -138,10 +105,8 @@ def parse_REG(cohort_dir, reg_annot, threshold_key):
                     current_feature_end = int(annot.split('-')[1].split('_')[0])
                     assert current_feature_end >= current_feature_start
                     current_feature_length = (current_feature_end - current_feature_start)
-                    #current_feature_length = (current_feature_end - current_feature_start) + 1
                     current_chrom = annot.split(':')[0].strip()
                     globals()[current_chrom+'_'+small_c+'_len'] += current_feature_length
-    
         
     for chrom in CHR_LIST:
         for small_c in SMALL_CATEGORY['REG']:
@@ -170,7 +135,6 @@ def parse_EPI(cohort_dir, epi_annot, threshold_key, ):
                     current_feature_end = int(annot.split('-')[1].split('_')[0])
                     assert current_feature_end >= current_feature_start
                     current_feature_length = (current_feature_end - current_feature_start)
-                    #current_feature_length = (current_feature_end - current_feature_start) + 1
                     current_chrom = annot.split(':')[0].strip()
                     globals()[current_chrom+'_'+small_c+'_len'] += current_feature_length
        
@@ -186,9 +150,6 @@ if __name__ == '__main__':
     args = parse_arguments()
     os.chdir(args.working_dir)
     
-    #cohort_dir = os.path.join(os.getcwd(), 'result', args.cohort)#이 cohrot에 대한 분석 결과 파일들이 있는 디렉토리
-    
-    # SAVEDIR: 현재 cohort의 결과를 저장하는 디렉토리.
     if args.dmr_type != 'risk_HL':
         SAVEDIR = os.path.join(os.getcwd(), 'result', args.cohort)
     else:
@@ -226,4 +187,3 @@ if __name__ == '__main__':
     EPI = parse_EPI(SAVEDIR, epi_annot, threshold_key)
     np.savez(os.path.join(SAVEDIR, 'DMR_EPI_features_threshold_'+args.threshold+'_len'), **EPI)  
     print("result file: {}".format(os.path.join(SAVEDIR, 'DMR_EPI_features_threshold_'+args.threshold+'_len')+'.npz'))
- 
