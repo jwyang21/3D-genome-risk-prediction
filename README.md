@@ -55,6 +55,7 @@ cd ../
 ```shell
 conda activate stem-closeness
 ```
+<!--
 #### 3-2-1. Preprocessing data
 - Download TCGA DNA methylation data from UCSC Xena ([3])
 ```shell
@@ -83,28 +84,29 @@ cd utils/scripts
 python3 0_get_sample_name_list.py
 cd ../../
 ```
-#### 3-2-2. Make binned difference matrices (BDMs)    
-##### 3-2-2-1. Make BDMs for TCGA samples ([5]), using open sea CpG probes
+-->
+#### 3-2-1. Make binned difference matrices (BDMs)    
+##### 3-2-1-1. Make BDMs for TCGA samples ([5]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-v2-opensea
 snakemake -j 10
 cd ../
 ```
-##### 3-2-2-2. Make BDMs for PCBC stem cell samples ([6]), using open sea CpG probes
+##### 3-2-1-2. Make BDMs for PCBC stem cell samples ([6]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-pcbc
 snakemake -j 10
 cd ../
 ```
-##### 3-2-2-3. Make list of genomic bins used for constructing BDM.
+##### 3-2-1-3. Make list of genomic bins used for constructing BDM.
 ```shell
 cd utils/scripts
 bash 1_find-bdm-bins.sh
 cd ../../
 ```
 
-#### 3-2-3. Run opensea pipeline
-##### 3-2-3-1. Compute stem closeness
+#### 3-2-2. Run opensea pipeline
+##### 3-2-2-1. Compute stem closeness
 ```shell
 cd opensea-pipeline/1_compute-score-opensea/scripts
 bash 1_all-samples-pc1.sh > ../log/1_all-samples-pc1.log
@@ -117,7 +119,7 @@ bash 5_compute-sc-euclidean-raw.sh > ../log/5_compute-sc-euclidean-raw.log
 cd ../../../
 ```
 
-##### 3-2-3-2. Investigating the characteristics of BDM 
+##### 3-2-2-2. Investigating the characteristics of BDM 
 - Make representative PC1 vectors of tumor, normal, and stem cells, respectively.
   - Representative PC1s are made by averaging PC1 vectors of 10 samples, computed from the BDM of same chromosome. 
 ```shell
@@ -205,7 +207,7 @@ bash parse_cox_results_v5.sh
 python3 plot-HR.py
 cd ../../../
 ```
-##### 3-2-3-3. DMR analysis
+##### 3-2-2-3. DMR analysis
 - Download annotation about gene and regulatory features (version: GRCh37)
 ```shell
 cd data
