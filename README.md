@@ -1,6 +1,6 @@
 # A deep learning-based risk prediction using 3D genome-aware epigenetic features
 ## 1. Introduction and overview
-## 1-1. Introduction    
+### 1-1. Introduction    
 We propose the utilization of 3D genome-aware epigenetic features extracted from the single-sample 450K DNA methylation data.       
 The overall pipeline consists of four main steps: (1) inferring 3D genome-aware epigenetic features of a single sample, using DNA methylation data only (note that inferred 3D genome state is representated as the first principal component; PC1), (2) construction of stem/normal references by averaging the PC1s from multiple samples, (3) using combinations of distances between PC1s to quantify stem closeness of each sample, and (4) risk prediction by the feedforward neural network model, using concatenation of 3D genome-aware epigenetic features and survival-related features (age and gender) as input feature.         
 The figures below describe a more detailed overview of this pipeline.
