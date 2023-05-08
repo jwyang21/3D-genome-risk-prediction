@@ -26,7 +26,7 @@ mamba env create --file stem-closeness.yaml
 conda install mamba -n base -c conda-forge
 mamba env create --file survival-analysis.yaml
 ```
-## 3. Process
+## 3. Process data and run experiments
 
 ### 3-1. Process Hi-C data 
 #### 3-1-1. Processing Hi-C data from 3DIV database ([1])
