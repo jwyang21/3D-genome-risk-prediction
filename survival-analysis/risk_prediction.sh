@@ -2,7 +2,7 @@ cpg_type=opensea
 result_dir=/data/project/3dith/result
 data_dir=/data/project/3dith/data/
 version=7.1
-script=1_risk_prediction.py
+script=risk_prediction.py
 num_folds=5
 
 for lr in 0.001 0.0001
