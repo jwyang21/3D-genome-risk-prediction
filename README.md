@@ -26,6 +26,7 @@ mamba env create --file stem-closeness.yaml
 conda install mamba -n base -c conda-forge
 mamba env create --file survival-analysis.yaml
 python3 -m pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip
+git clone https://github.com/jaredleekatzman/DeepSurv.git [destination_folder]
 ```
 ## 3. Processing data and running experiments
 
