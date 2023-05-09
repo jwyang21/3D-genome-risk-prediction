@@ -1,4 +1,5 @@
-# modified referring to https://github.com/JoonHyeongPark/ExplainableMLKGNN/blob/main/model.py
+# modified the codes of https://github.com/jaredleekatzman/DeepSurv/blob/41eed003e5b892c81e7855e400861fa7a2d9da4f/deepsurv/deep_surv.py
+# referred to https://github.com/JoonHyeongPark/ExplainableMLKGNN/blob/main/model.py
 
 from __future__ import print_function, absolute_import
 
