@@ -28,11 +28,11 @@ mamba env create --file survival-analysis.yaml
 python3 -m pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip
 git clone https://github.com/jaredleekatzman/DeepSurv.git [destination_folder]
 ```
-In the \[destination\_folder] where the git repository of DeepSurv ([1]) is cloned to, replace the 'deep_surv.py' file in the 'deepsurv' folder with the [deep_surv.py](https://github.com/jwyang21/3D-genome-risk-prediction/blob/main/survival-analysis/deep_surv.py) which is located in the 'survival-analysis' directory of the current repository.
+In the \[destination\_folder] where the git repository of DeepSurv ([1]) is cloned to, replace the 'deep_surv.py' file in the 'deepsurv' folder with the [deep_surv.py](https://github.com/jwyang21/3D-genome-risk-prediction/blob/main/survival-analysis/deep_surv.py) which is located in the 'survival-analysis' folder of the current repository.
 ## 3. Processing data and running experiments
 
 ### 3-1. Processing Hi-C data 
-#### 3-1-1. Processing Hi-C data from 3DIV database ([1])
+#### 3-1-1. Processing Hi-C data from 3DIV database ([2])
 - For this case, we need to process raw Hi-C data to get PC1 vectors, since PC1 values are not provided directly.
   - In case of 'stem-closeness/hic-processing/manifest.csv' in this repository, information of Hi-C data obtained from cancer cell lines are written.
   - When processing Hi-C data of other cell line, <ins>name, library\_layout, and run\_accession</ins> information of that data should be written instead in the aforementioned manifest.csv file.
@@ -47,7 +47,7 @@ python ab2corrmat.py
 bash copy_corrmat.sh
 cd ../
 ```
-#### 3-1-2. Processing PC1 values computed from Hi-C data of normal tissues ([2])
+#### 3-1-2. Processing PC1 values computed from Hi-C data of normal tissues ([3])
 - For this case, PC1 values derived from Hi-C data of normal tissues are provided by the supplementary information. 
 ```shell
 cd data
@@ -160,10 +160,11 @@ bash 8_compute-chromatin-state-proportion.sh
 cd ../
 ```
 ## Reference
-[1] Kim, Kyukwang, et al. "3DIV update for 2021: a comprehensive resource of 3D genome and 3D cancer genome." Nucleic Acids Research 49.D1 (2021): D38-D46.         
-[2] Schmitt, Anthony D., et al. "A compendium of chromatin contact maps reveals spatially active regions in the human genome." Cell reports 17.8 (2016): 2042-2059.       
-[3] Goldman, Mary J., et al. "Visualizing and interpreting cancer genomics data via the Xena platform." Nature biotechnology 38.6 (2020): 675-678.         
-[4] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.            
-[5] Hutter, Carolyn, and Jean Claude Zenklusen. "The cancer genome atlas: creating lasting value beyond its data." Cell 173.2 (2018): 283-285.               
-[6] Salomonis, Nathan, et al. "Integrated genomic analysis of diverse induced pluripotent stem cells from the progenitor cell biology consortium." Stem cell reports 7.1 (2016): 110-125.        
-[7] Kundaje, Anshul, et al. "Integrative analysis of 111 reference human epigenomes." Nature 518.7539 (2015): 317-330.
+[1] Katzman, Jared L., et al. "DeepSurv: personalized treatment recommender system using a Cox proportional hazards deep neural network." BMC medical research methodology 18.1 (2018): 1-12.
+[2] Kim, Kyukwang, et al. "3DIV update for 2021: a comprehensive resource of 3D genome and 3D cancer genome." Nucleic Acids Research 49.D1 (2021): D38-D46.         
+[3] Schmitt, Anthony D., et al. "A compendium of chromatin contact maps reveals spatially active regions in the human genome." Cell reports 17.8 (2016): 2042-2059.       
+[4] Goldman, Mary J., et al. "Visualizing and interpreting cancer genomics data via the Xena platform." Nature biotechnology 38.6 (2020): 675-678.         
+[5] Bibikova, Marina, et al. "High density DNA methylation array with single CpG site resolution." Genomics 98.4 (2011): 288-295.            
+[6] Hutter, Carolyn, and Jean Claude Zenklusen. "The cancer genome atlas: creating lasting value beyond its data." Cell 173.2 (2018): 283-285.               
+[7] Salomonis, Nathan, et al. "Integrated genomic analysis of diverse induced pluripotent stem cells from the progenitor cell biology consortium." Stem cell reports 7.1 (2016): 110-125.        
+[8] Kundaje, Anshul, et al. "Integrative analysis of 111 reference human epigenomes." Nature 518.7539 (2015): 317-330.
