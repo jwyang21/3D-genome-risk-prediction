@@ -28,7 +28,7 @@ mamba env create --file survival-analysis.yaml
 python3 -m pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip
 git clone https://github.com/jaredleekatzman/DeepSurv.git [destination_folder]
 ```
-In the destination\_folder where the git repository of DeepSurv ([1]) is cloned to, replace the 'deep_surv.py' file in the 'deepsurv' directory with the 'deep_surv.py' file in the 'survival-analysis' directory of the current repository.
+In the destination\_folder where the git repository of DeepSurv ([1]) is cloned to, replace the 'deep_surv.py' file in the 'deepsurv' folder with the [deep_surv.py](https://github.com/jwyang21/3D-genome-risk-prediction/blob/main/survival-analysis/deep_surv.py) which is located in the 'survival-analysis' directory of the current repository.
 ## 3. Processing data and running experiments
 
 ### 3-1. Processing Hi-C data 
