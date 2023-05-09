@@ -48,7 +48,7 @@ bash copy_corrmat.sh
 cd ../
 ```
 #### 3-1-2. Processing PC1 values computed from Hi-C data of normal tissues ([3])
-- For this case, PC1 values derived from Hi-C data of normal tissues are provided by the supplementary information. 
+- PC1 values derived from Hi-C data of normal tissues are provided by the supplementary information of [3]. 
 ```shell
 cd data
 python3 download_FIRE_PC1.py 
