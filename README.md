@@ -160,7 +160,7 @@ bash 8_compute-chromatin-state-proportion.sh
 cd ../
 ```
 ## Reference
-[1] Katzman, Jared L., et al. "DeepSurv: personalized treatment recommender system using a Cox proportional hazards deep neural network." BMC medical research methodology 18.1 (2018): 1-12.
+[1] Katzman, Jared L., et al. "DeepSurv: personalized treatment recommender system using a Cox proportional hazards deep neural network." BMC medical research methodology 18.1 (2018): 1-12.                  
 [2] Kim, Kyukwang, et al. "3DIV update for 2021: a comprehensive resource of 3D genome and 3D cancer genome." Nucleic Acids Research 49.D1 (2021): D38-D46.         
 [3] Schmitt, Anthony D., et al. "A compendium of chromatin contact maps reveals spatially active regions in the human genome." Cell reports 17.8 (2016): 2042-2059.       
 [4] Goldman, Mary J., et al. "Visualizing and interpreting cancer genomics data via the Xena platform." Nature biotechnology 38.6 (2020): 675-678.         
