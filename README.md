@@ -60,13 +60,13 @@ conda activate stem-closeness
 ```
 
 #### 3-2-1. Constructing BDM  
-##### 3-2-1-1. Constructing BDMs for TCGA samples ([4,5,6]), using open sea CpG probes
+##### 3-2-1-1. Constructing BDMs for TCGA samples, using the 450K DNA methylation data of open sea CpG positions ([4,5,6])
 ```shell
 cd binned-difference-matrix-v2-opensea
 snakemake -j 10
 cd ../
 ```
-##### 3-2-1-2. Constructing BDMs for PCBC stem cell samples ([7]), using open sea CpG probes
+##### 3-2-1-2. Constructing BDMs for PCBC stem cell samples ([7]), using open sea CpG positions
 ```shell
 cd binned-difference-matrix-pcbc
 snakemake -j 10
