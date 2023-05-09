@@ -21,7 +21,6 @@ import argparse
 import pickle
 import time
 import math
-import shutil
 
 # set default params for matplotlib.pyplot
 matplotlib.rcParams['figure.dpi'] = 300 #150
