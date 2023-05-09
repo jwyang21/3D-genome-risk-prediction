@@ -4,7 +4,10 @@
 # Modified the codes from https://github.com/jaredleekatzman/DeepSurv/blob/41eed003e5b892c81e7855e400861fa7a2d9da4f/notebooks/DeepSurv%20Example.ipynb
 
 import sys
-sys.path.append('/data/project/jeewon/research/DeepSurv/deepsurv')
+# sys.path.append([destination_folder]) 
+## destination_folder: directory where the git repository is cloned to.
+#### refer to README: git clone https://github.com/jaredleekatzman/DeepSurv.git [destination_folder]
+sys.path.append('/data/project/jeewon/research/DeepSurv/deepsurv') # comment this line after running sys.path.append([destination_folder])
 import deep_surv
 from deepsurv_logger import DeepSurvLogger, TensorboardLogger
 import utils
