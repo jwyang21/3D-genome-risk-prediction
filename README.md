@@ -60,13 +60,13 @@ conda activate stem-closeness
 ```
 
 #### 3-2-1. Constructing BDM  
-##### 3-2-1-1. Constructing BDMs for TCGA samples ([5]), using open sea CpG probes
+##### 3-2-1-1. Constructing BDMs for TCGA samples ([4,5,6]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-v2-opensea
 snakemake -j 10
 cd ../
 ```
-##### 3-2-1-2. Constructing BDMs for PCBC stem cell samples ([6]), using open sea CpG probes
+##### 3-2-1-2. Constructing BDMs for PCBC stem cell samples ([7]), using open sea CpG probes
 ```shell
 cd binned-difference-matrix-pcbc
 snakemake -j 10
@@ -145,6 +145,7 @@ bash cox_risk.sh
 cd ../
 ```
 ### 3-5. DMR analysis
+For the chromatin states, use the data provided by [8].
 ```shell
 cd dmr-analysis/
 bash 0_compute_binned_avg_opensea_beta.sh
