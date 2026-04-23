@@ -1,4 +1,8 @@
 # A deep learning-based risk prediction using 3D genome-aware epigenetic features
+
+[ACM-BCB 2023 Oral Presentation] Official repository of "Deep learning-based survival prediction using DNA methylation-derived 3D genomic information"
+
+
 ## 1. Introduction and overview
 ### 1-1. Introduction    
 We propose the utilization of 3D genome-aware epigenetic features extracted from the single-sample 450K DNA methylation data.       
